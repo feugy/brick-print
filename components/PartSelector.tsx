@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { type MouseEvent, useState } from 'react'
 import {
   Popover,
   PopoverContent,
@@ -53,7 +53,7 @@ export default function PartSelector({
     setOpen(false)
   }
 
-  const handleClickSearch = (e) => {
+  const handleClickSearch = (e: MouseEvent<HTMLInputElement>) => {
     // prevents opening search results when they are empty
     if (!searchResults.length) {
       e.preventDefault()

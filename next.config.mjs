@@ -1,15 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-    images: {
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'brickarchitect.com',
-          pathname: '/content/parts-veryhighcontrast/**',
-        },
-      ],
-    },
+const nextConfig = {}
 
-};
-
-export default nextConfig;
+export default nextConfig

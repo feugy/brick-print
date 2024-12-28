@@ -1,57 +1,63 @@
-import { NextResponse } from 'next/server';
-import * as cheerio from 'cheerio';
+import { NextResponse } from 'next/server'
+import * as cheerio from 'cheerio'
 
 interface Part {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const query = searchParams.get('q');
+  const { searchParams } = new URL(request.url)
+  const query = searchParams.get('q')
 
   if (!query) {
-    return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Query parameter is required' },
+      { status: 400 }
+    )
   }
 
   try {
-    const response = await fetch(`https://brickarchitect.com/parts/search?q=${encodeURIComponent(query)}`);
-    
+    const response = await fetch(
+      `https://brickarchitect.com/parts/search?q=${encodeURIComponent(query)}`
+    )
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch: ${response.status} ${response.statusText}`
+      )
     }
-    
-    const html = await response.text();
-    const $ = cheerio.load(html);
-    
-    const parts: Part[] = [];
-    
+
+    const html = await response.text()
+    const $ = cheerio.load(html)
+
+    const parts: Part[] = []
+
     // Find all divs with class 'partcontainer'
     $('.partcontainer').each((_, element) => {
-      const partIdElement = $(element).find('.partnum');
-      const partNameElement = $(element).find('.partname');
-      
-      // Remove .indicator elements from partIdElement
-      partIdElement.find('.indicator').remove();
-      
-      const id = partIdElement.text().trim();
-      const name = partNameElement.text().trim();
-      
-      if (id && name) {
-        parts.push({ id, name });
-      }
-    });
+      const partIdElement = $(element).find('.partnum')
+      const partNameElement = $(element).find('.partname')
 
-    return NextResponse.json({ parts });
+      // Remove .indicator elements from partIdElement
+      partIdElement.find('.indicator').remove()
+
+      const id = partIdElement.text().trim()
+      const name = partNameElement.text().trim()
+
+      if (id && name) {
+        parts.push({ id, name })
+      }
+    })
+
+    return NextResponse.json({ parts })
   } catch (error) {
-    console.error('Error fetching part data:', error);
+    console.error('Error fetching part data:', error)
     return NextResponse.json(
-      { 
-        error: 'Failed to fetch part data', 
-        details: error instanceof Error ? error.message : 'Unknown error'
-      }, 
+      {
+        error: 'Failed to fetch part data',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
-    );
+    )
   }
 }
-

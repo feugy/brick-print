@@ -1,6 +1,5 @@
 # TODO
 
-- next 15
 - fix styling issues for image size
 
 # Prompt

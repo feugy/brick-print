@@ -1,34 +1,47 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import BrickSelector from "@/components/BrickSelector"
-import StickerLayout from "@/components/StickerLayout"
-import { PrintButton } from "@/components/PrintButton"
-import { Part, Size } from "@/lib/types"
+import { useState } from 'react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import PartSelector from '@/components/PartSelector'
+import StickerLayout from '@/components/StickerLayout'
+import { PrintButton } from '@/components/PrintButton'
+import type { Part, Size } from '@/lib/types'
 
 const predefinedSizes: Size[] = [
   { width: 160, height: 40, unit: 'mm' },
   { width: 330, height: 60, unit: 'mm' },
-  { width: 35, height: 35, unit: 'mm' }
+  { width: 35, height: 35, unit: 'mm' },
 ]
 
 export default function CreateSticker() {
   const [size, setSize] = useState<Size>(predefinedSizes[0])
-  const [customSize, setCustomSize] = useState<Size>({ width: 10, height: 10, unit: 'mm' })
+  const [customSize, setCustomSize] = useState<Size>({
+    width: 10,
+    height: 10,
+    unit: 'mm',
+  })
   const [selectedBricks, setSelectedBricks] = useState<Part[]>([])
 
   const handleSizeChange = (value: string) => {
-    if (value === "custom") {
+    if (value === 'custom') {
       setSize(customSize)
     } else {
       setSize(predefinedSizes[Number.parseInt(value)])
     }
   }
 
-  const handleCustomSizeChange = (dimension: 'width' | 'height', value: string) => {
+  const handleCustomSizeChange = (
+    dimension: 'width' | 'height',
+    value: string
+  ) => {
     const newSize = { ...customSize, [dimension]: Number.parseInt(value) }
     setCustomSize(newSize)
     if (size.width === customSize.width && size.height === customSize.height) {
@@ -40,12 +53,15 @@ export default function CreateSticker() {
     setSelectedBricks([...selectedBricks, brick])
   }
 
-  const currentSize = size.width === customSize.width && size.height === customSize.height ? customSize : size
+  const currentSize =
+    size.width === customSize.width && size.height === customSize.height
+      ? customSize
+      : size
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Create New Sticker</h1>
-      
+
       <div className="mb-4">
         <Label htmlFor="size">Sticker Size</Label>
         <Select onValueChange={handleSizeChange}>
@@ -71,7 +87,7 @@ export default function CreateSticker() {
               id="custom-width"
               type="number"
               value={customSize.width}
-              onChange={(e) => handleCustomSizeChange("width", e.target.value)}
+              onChange={(e) => handleCustomSizeChange('width', e.target.value)}
             />
           </div>
           <div>
@@ -80,21 +96,18 @@ export default function CreateSticker() {
               id="custom-height"
               type="number"
               value={customSize.height}
-              onChange={(e) => handleCustomSizeChange("height", e.target.value)}
+              onChange={(e) => handleCustomSizeChange('height', e.target.value)}
             />
           </div>
         </div>
       )}
 
-      <BrickSelector onAddBrick={handleAddBrick} selectedBricks={selectedBricks} />
-
-      <StickerLayout
-        size={currentSize}
-        bricks={selectedBricks}
+      <PartSelector
+        onAddBrick={handleAddBrick}
+        selectedBricks={selectedBricks}
       />
-
+      <StickerLayout size={currentSize} bricks={selectedBricks} />
       <PrintButton size={currentSize} bricks={selectedBricks} />
     </div>
   )
 }
-

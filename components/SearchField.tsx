@@ -1,37 +1,31 @@
-import React, { forwardRef } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { forwardRef, type InputHTMLAttributes, type KeyboardEvent } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
-interface SearchFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  onSearch: () => void;
-  isLoading: boolean;
+interface SearchFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+  onSearch: () => void
+  isLoading: boolean
 }
 
 const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
   ({ onSearch, isLoading, ...props }, ref) => {
-    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
-        onSearch();
+        onSearch()
       }
-    };
-  
+    }
+
     return (
       <div className="flex gap-2">
-        <Input
-          {...props}
-          onKeyPress={handleKeyPress}
-          ref={ref}
-          type="text"
-        />
+        <Input {...props} onKeyDown={handleKeyDown} ref={ref} type="text" />
         <Button disabled={isLoading} onClick={onSearch}>
-          {isLoading ? "Searching..." : "Search"}
+          {isLoading ? 'Searching...' : 'Search'}
         </Button>
       </div>
     )
   }
 )
 
-SearchField.displayName = "SearchField"
+SearchField.displayName = 'SearchField'
 
 export default SearchField
-

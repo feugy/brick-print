@@ -1,7 +1,7 @@
-import { Part } from "@/lib/types"
+import type { Part } from '@/lib/types'
 
 interface PartLabelProps {
-  part: Part;
+  part: Part
 }
 
 export function PartLabel({ part }: PartLabelProps) {
@@ -19,4 +19,3 @@ export function PartLabel({ part }: PartLabelProps) {
     </div>
   )
 }
-

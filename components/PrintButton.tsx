@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
 import { useRef } from 'react'
-import { Button } from "@/components/ui/button"
-import { Size, Part } from '@/lib/types'
+import { Button } from '@/components/ui/button'
+import type { Size, Part } from '@/lib/types'
 import { StickerLayout } from './StickerLayout'
 
 interface PrintButtonProps {
-  size: Size;
-  bricks: Part[];
+  size: Size
+  bricks: Part[]
 }
 
 export function PrintButton({ size, bricks }: PrintButtonProps) {
@@ -62,8 +62,9 @@ export function PrintButton({ size, bricks }: PrintButtonProps) {
       <div ref={contentRef} className="hidden">
         <StickerLayout size={size} bricks={bricks} />
       </div>
-      <Button onClick={handlePrint} className="mt-4">Print Sticker</Button>
+      <Button onClick={handlePrint} className="mt-4">
+        Print Sticker
+      </Button>
     </>
   )
 }
-

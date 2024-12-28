@@ -1,6 +1,12 @@
 # TODO
 
-- fix styling issues for image size
+- fix styling issues when printing
+- fix search result re-open with keyboard
+- set max image height 60583 
+- remove elements in sticker
+- reorder elements in sticker
+- rename in sticker
+- keyboard navigation in search results
 
 # Prompt
 

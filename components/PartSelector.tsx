@@ -1,13 +1,13 @@
 'use client'
 
-import { useCallback, useState, useEffect } from 'react'
+import { useState } from 'react'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { SearchResult } from './SearchResult'
-import SearchField from './SearchField'
+import { SearchResults } from '@/components/SearchResults'
+import SearchField from '@/components/SearchField'
 import type { Part } from '@/lib/types'
 
 interface PartSelectorProps {
@@ -74,7 +74,7 @@ export default function PartSelector({
           />
         </PopoverTrigger>
         <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
-          <SearchResult
+          <SearchResults
             onSelectPart={handleAddBrick}
             searchResults={searchResults}
             selectedBricks={selectedBricks}

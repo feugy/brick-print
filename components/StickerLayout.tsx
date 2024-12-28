@@ -1,4 +1,4 @@
-import { PartLabel } from './PartLabel'
+import { PartLabel } from '@/components/PartLabel'
 import type { Part, Size } from '@/lib/types'
 
 interface StickerLayoutProps {

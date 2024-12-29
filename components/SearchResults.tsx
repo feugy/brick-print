@@ -39,13 +39,13 @@ export function SearchResults({
           <button
             disabled={selected.some(({ id }) => id === part.id)}
             key={part.id}
-            className={`flex flex-col items-center justify-center p-2 border rounded cursor-pointer transition-colors 
-                disabled:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            className={`flex flex-col items-center justify-start p-2 border rounded cursor-pointer transition-colors 
+                disabled:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 h-full`}
             onClick={() => onSelect(part)}
             type="button"
           >
             <PartImage part={part} />
-            <p className="text-xs font-medium text-center mt-2 truncate w-full">
+            <p className="text-xs font-medium text-center mt-2 w-full whitespace-pre-wrap">
               {part.name}
             </p>
             <p className="text-xs text-gray-500">{part.id}</p>

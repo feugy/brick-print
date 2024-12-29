@@ -4,6 +4,7 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -41,6 +42,10 @@ export function EditPartModal({
         <DialogHeader>
           <DialogTitle>Edit Part</DialogTitle>
         </DialogHeader>
+        <DialogDescription>
+          Edit the name of the selected part. You can use multiple lines if
+          needed.
+        </DialogDescription>
         <div className="py-4">
           <Textarea
             value={editedPart.name}

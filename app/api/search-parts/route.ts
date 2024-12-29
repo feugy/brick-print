@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import * as cheerio from 'cheerio'
+import { fixName } from '@/lib/text'
 
 interface Part {
   id: string
@@ -45,7 +46,7 @@ export async function GET(request: Request) {
       const name = partNameElement.text().trim()
 
       if (id && name) {
-        parts.push({ id, name })
+        parts.push({ id, name: fixName(name) })
       }
     })
 

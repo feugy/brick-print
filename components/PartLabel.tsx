@@ -17,7 +17,7 @@ export function PartLabel({ part, onRemove, onEdit }: PartLabelProps) {
   return (
     <div className="flex items-center gap-1 h-8 p-0.5 relative group">
       <PartImage part={part} className="w-7 h-7" />
-      <div className="flex flex-col text-[7px]">
+      <div className="flex flex-col text-[8px] leading-[.6rem]">
         <span className="font-medium whitespace-pre-wrap">{part.name}</span>
         <span className="text-gray-500 truncate">{part.id}</span>
       </div>

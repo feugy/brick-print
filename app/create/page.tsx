@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import {
   Select,
   SelectContent,
@@ -11,8 +11,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PartSelector } from '@/components/PartSelector'
-import { StickerLayout } from '@/components/StickerLayout'
 import { PrintButton } from '@/components/PrintButton'
+import { StickerLayout } from '@/components/StickerLayout'
 import type { Part, Size } from '@/lib/types'
 
 const predefinedSizes: Size[] = [
@@ -29,6 +29,7 @@ export default function CreateSticker() {
     unit: 'mm',
   })
   const [selected, setSelectedParts] = useState<Part[]>([])
+  const printableRef = useRef<HTMLDivElement>(null)
 
   const handleSizeChange = (value: string) => {
     if (value === 'custom') {
@@ -116,13 +117,15 @@ export default function CreateSticker() {
       )}
 
       <PartSelector onAdd={handleAdd} selected={selected} />
-      <StickerLayout
-        size={currentSize}
-        parts={selected}
-        onRemove={handleRemove}
-        onEdit={handleEdit}
-      />
-      <PrintButton size={currentSize} parts={selected} />
+      <div ref={printableRef}>
+        <StickerLayout
+          size={currentSize}
+          parts={selected}
+          onRemove={handleRemove}
+          onEdit={handleEdit}
+        />
+      </div>
+      <PrintButton ref={printableRef} />
     </div>
   )
 }

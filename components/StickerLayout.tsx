@@ -23,7 +23,7 @@ export function StickerLayout({
   return (
     <div
       style={containerStyle}
-      className="relative flex flex-row flex-wrap items-start content-start gap-0.5 p-0.5 overflow-hidden"
+      className="relative flex flex-row flex-wrap items-start content-start gap-1.5 p-0.5 overflow-hidden"
     >
       {parts.map((part) => (
         <PartLabel

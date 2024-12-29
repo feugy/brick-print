@@ -48,7 +48,7 @@ export function PartLabel({
       className="flex items-center gap-1 h-8 p-0.5 relative group/part"
     >
       <PartImage part={part} className="w-7 h-7" {...listeners} />
-      <div className="flex flex-col text-[8px] leading-[.6rem]">
+      <div className="flex flex-col font-[Arial,Helvetica] text-[8px] leading-[.6rem] ">
         <span className="font-medium whitespace-pre-wrap">{part.name}</span>
         <span className="text-gray-500 truncate">{part.id}</span>
       </div>

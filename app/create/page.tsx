@@ -36,12 +36,15 @@ export default function CreatePage() {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Create New Stickers</h1>
-
-      <SizeSelector onAdd={handleAddSticker} />
-      <PartSelector onAdd={handleAddPart} selected={selectedParts} />
-      <Page stickers={stickers} onEdit={setStickers} />
+    <div className="flex flex-col gap-4">
+      <h1 className="text-5xl font-bold bg-accent text-black uppercase px-8 py-4 w-screen">
+        Create New Stickers
+      </h1>
+      <div className="flex flex-col gap-4 p-4">
+        <SizeSelector onAdd={handleAddSticker} />
+        <PartSelector onAdd={handleAddPart} selected={selectedParts} />
+        <Page stickers={stickers} onEdit={setStickers} />
+      </div>
     </div>
   )
 }

@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -29,14 +25,14 @@ body {
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --primary: 210 100% 50%;  /* Blue */
+    --primary-foreground: 0 0% 100%;
+  
+    --secondary: 0 85% 45%;  /* Red */
+    --secondary-foreground: 0 0% 100%;
+  
+    --accent: 45 100% 50%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -61,14 +57,14 @@ body {
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --primary: 210 100% 50%;  /* Blue */
+    --primary-foreground: 0 0% 100%;
+  
+    --secondary: 0 85% 45%;  /* Red */
+    --secondary-foreground: 0 0% 100%;
+  
+    --accent: 45 100% 50%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 85.7% 97.3%;
@@ -83,5 +79,10 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-pt);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    font-family: var(--font-jua);
   }
 }

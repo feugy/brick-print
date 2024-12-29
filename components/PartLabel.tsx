@@ -1,6 +1,8 @@
 import { PartImage } from '@/components/PartImage'
 import { Button } from '@/components/ui/button'
 import type { Part } from '@/lib/types'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { Edit2, X } from 'lucide-react'
 import { useState } from 'react'
 import { EditPartModal } from './EditPartModal'
@@ -9,14 +11,43 @@ interface PartLabelProps {
   part: Part
   onRemove?: (part: Part) => void
   onEdit?: (updatedPart: Part) => void
+  dragOverlay?: boolean
 }
 
-export function PartLabel({ part, onRemove, onEdit }: PartLabelProps) {
+export function PartLabel({
+  part,
+  onRemove,
+  onEdit,
+  dragOverlay,
+}: PartLabelProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const { active, listeners, setNodeRef, transform, transition } = useSortable({
+    id: part.id,
+    transition: null,
+  })
+
+  const style = {
+    transform: CSS.Transform.toString(
+      transform
+        ? {
+            ...transform,
+            scaleX: 1,
+            scaleY: 1,
+          }
+        : null
+    ),
+    transition,
+    visibility:
+      !dragOverlay && active?.id === part.id ? ('hidden' as const) : undefined,
+  }
 
   return (
-    <div className="flex items-center gap-1 h-8 p-0.5 relative group/part">
-      <PartImage part={part} className="w-7 h-7" />
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-1 h-8 p-0.5 relative group/part"
+    >
+      <PartImage part={part} className="w-7 h-7" {...listeners} />
       <div className="flex flex-col text-[8px] leading-[.6rem]">
         <span className="font-medium whitespace-pre-wrap">{part.name}</span>
         <span className="text-gray-500 truncate">{part.id}</span>

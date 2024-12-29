@@ -1,7 +1,6 @@
 # TODO
 
 - fix search result re-open with keyboard
-- reorder elements in sticker
 - keyboard navigation in search results
 
 # v0 Chat

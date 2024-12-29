@@ -1,13 +1,24 @@
 import type { Part } from '@/lib/types'
+import type { Ref, HTMLAttributes } from 'react'
 
-interface PartImageProps {
+interface PartImageProps extends HTMLAttributes<HTMLDivElement> {
   part: Part
   className?: string
+  ref?: Ref<HTMLDivElement>
 }
 
-export function PartImage({ part, className = '' }: PartImageProps) {
+export function PartImage({
+  part,
+  ref,
+  className = '',
+  ...props
+}: PartImageProps) {
   return (
-    <div className={`flex items-center justify-center flex-1 ${className}`}>
+    <div
+      className={`flex items-center justify-center flex-1 ${className}`}
+      ref={ref}
+      {...props}
+    >
       <img
         alt={part.name}
         className="h-auto w-auto max-h-full"

@@ -1,31 +1,38 @@
 'use client'
 
-import { SearchField } from '@/components/SearchField'
-import { SearchResults } from '@/components/SearchResults'
+import { PartImage } from '@/components/PartImage'
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import type { Part } from '@/lib/types'
-import { type MouseEvent, useState } from 'react'
+import { useState } from 'react'
+import { useDebouncedCallback } from 'use-debounce'
 
 interface PartSelectorProps {
   onAdd: (part: Part) => void
   selected: Part[]
+  size?: number
 }
 
 export function PartSelector({
-  onAdd: onAddBrick,
-  selected: selectedBricks,
+  onAdd,
+  selected,
+  size = 128,
 }: PartSelectorProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState<Part[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [open, setOpen] = useState(false)
 
-  const searchParts = async () => {
-    if (!searchTerm) return
+  const searchParts = useDebouncedCallback(async () => {
+    if (searchTerm.length === 0) {
+      setSearchResults([])
+      return
+    }
+    if (isLoading || searchTerm.length < 2) return
 
     setIsLoading(true)
     try {
@@ -39,48 +46,54 @@ export function PartSelector({
       }
 
       setSearchResults(data.parts)
-      setOpen(true)
     } catch (error) {
       console.error('Error fetching part data:', error)
       setSearchResults([])
     } finally {
       setIsLoading(false)
     }
-  }
+  }, 500)
 
-  const handleAddBrick = (part: Part) => {
-    onAddBrick(part)
-    setOpen(false)
-  }
-
-  const handleClickSearch = (e: MouseEvent<HTMLInputElement>) => {
-    // prevents opening search results when they are empty
-    if (!searchResults.length) {
-      e.preventDefault()
-    }
+  const handleChange = (value: string) => {
+    setSearchTerm(value)
+    searchParts()
   }
 
   return (
-    <div className="mb-4 relative">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <SearchField
-            isLoading={isLoading}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onClick={handleClickSearch}
-            onSearch={searchParts}
-            placeholder="Search for Lego parts"
-            value={searchTerm}
-          />
-        </PopoverTrigger>
-        <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
-          <SearchResults
-            onSelect={handleAddBrick}
-            results={searchResults}
-            selected={selectedBricks}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
+    <Command shouldFilter={false} loop className="border">
+      <CommandInput
+        placeholder="Search for Lego parts"
+        value={searchTerm}
+        onValueChange={handleChange}
+      />
+      <CommandList>
+        {isLoading && <CommandEmpty>Fetching parts...</CommandEmpty>}
+        {!isLoading && searchResults.length === 0 && (
+          <CommandEmpty>No part found</CommandEmpty>
+        )}
+        <div
+          className="grid gap-2 p-2"
+          style={{
+            gridTemplateColumns: `repeat(auto-fill, minmax(${size}px, 1fr))`,
+          }}
+        >
+          {searchResults.map((part) => (
+            <CommandItem
+              disabled={selected.some(({ id }) => id === part.id)}
+              key={part.id}
+              value={part.name}
+              className="flex flex-col items-center justify-start p-2 border rounded cursor-pointer transition-colors"
+              onSelect={() => onAdd(part)}
+            >
+              <PartImage part={part} className="max-h-10" />
+              <p className="text-xs font-medium text-center mt-2 w-full whitespace-pre-wrap">
+                {part.name}
+              </p>
+              <p className="text-xs text-gray-500">{part.id}</p>
+            </CommandItem>
+          ))}
+        </div>
+      </CommandList>
+    </Command>
   )
 }

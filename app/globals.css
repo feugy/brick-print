@@ -25,12 +25,12 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
 
-    --primary: 210 100% 50%;  /* Blue */
+    --primary: 210 100% 50%; /* Blue */
     --primary-foreground: 0 0% 100%;
-  
-    --secondary: 0 85% 45%;  /* Red */
+
+    --secondary: 0 85% 45%; /* Red */
     --secondary-foreground: 0 0% 100%;
-  
+
     --accent: 45 100% 50%;
     --accent-foreground: 0 0% 0%;
 
@@ -57,12 +57,12 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
 
-    --primary: 210 100% 50%;  /* Blue */
+    --primary: 210 100% 50%; /* Blue */
     --primary-foreground: 0 0% 100%;
-  
-    --secondary: 0 85% 45%;  /* Red */
+
+    --secondary: 0 85% 45%; /* Red */
     --secondary-foreground: 0 0% 100%;
-  
+
     --accent: 45 100% 50%;
     --accent-foreground: 0 0% 0%;
 
@@ -81,7 +81,12 @@
     @apply bg-background text-foreground;
     font-family: var(--font-pt);
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: bold;
     font-family: var(--font-jua);
   }

@@ -1,3 +1,4 @@
+import { improveQuery } from '@/lib/query'
 import { fixName } from '@/lib/text'
 import * as cheerio from 'cheerio'
 import { NextResponse } from 'next/server'
@@ -20,7 +21,7 @@ export async function GET(request: Request) {
 
   try {
     const response = await fetch(
-      `https://brickarchitect.com/parts/search?q=${encodeURIComponent(query)}`
+      `https://brickarchitect.com/parts/search?q=${encodeURIComponent(improveQuery(query))}`
     )
 
     if (!response.ok) {

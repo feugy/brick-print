@@ -1,6 +1,5 @@
 # TODO
 
-- fix search result re-open with keyboard
 - keyboard navigation in search results
 
 # v0 Chat

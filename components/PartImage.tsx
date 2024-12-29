@@ -1,5 +1,5 @@
 import type { Part } from '@/lib/types'
-import type { Ref, HTMLAttributes } from 'react'
+import type { HTMLAttributes, Ref } from 'react'
 
 interface PartImageProps extends HTMLAttributes<HTMLDivElement> {
   part: Part

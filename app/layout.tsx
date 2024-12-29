@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import './globals.css'
-import { PT_Sans, Jua } from 'next/font/google'
+import { Jua, PT_Sans } from 'next/font/google'
 
 const pt = PT_Sans({
   subsets: ['latin'],

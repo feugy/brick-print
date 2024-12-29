@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server'
-import * as cheerio from 'cheerio'
 import { fixName } from '@/lib/text'
+import * as cheerio from 'cheerio'
+import { NextResponse } from 'next/server'
 
 interface Part {
   id: string

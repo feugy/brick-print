@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { trimText, fixName } from '@/lib/text'
+import { fixName, trimText } from '@/lib/text'
+import { describe, expect, it } from 'vitest'
 
 describe('trimText()', () => {
   it('trims whitespace from each line', () => {

@@ -1,16 +1,16 @@
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from '@/components/ui/dialog'
-import type { Part } from '@/lib/types'
+import { Textarea } from '@/components/ui/textarea'
 import { trimText } from '@/lib/text'
+import type { Part } from '@/lib/types'
+import { useState } from 'react'
 
 interface EditPartModalProps {
   part: Part
@@ -28,11 +28,11 @@ export function EditPartModal({
   const [editedPart, setEditedPart] = useState(part)
 
   const handleNameChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setEditedPart({ ...editedPart, name: trimText(e.target.value) })
+    setEditedPart({ ...editedPart, name: e.target.value })
   }
 
   const handleSave = () => {
-    onSave(editedPart)
+    onSave({ ...editedPart, name: trimText(editedPart.name) })
     onClose()
   }
 

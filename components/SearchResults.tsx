@@ -1,6 +1,6 @@
-import { useRef } from 'react'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { PartImage } from '@/components/PartImage'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useRef } from 'react'
 
 interface Part {
   id: string

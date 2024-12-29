@@ -1,14 +1,14 @@
 'use client'
 
-import { type MouseEvent, useState } from 'react'
+import { SearchField } from '@/components/SearchField'
+import { SearchResults } from '@/components/SearchResults'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { SearchResults } from '@/components/SearchResults'
-import SearchField from '@/components/SearchField'
 import type { Part } from '@/lib/types'
+import { type MouseEvent, useState } from 'react'
 
 interface PartSelectorProps {
   onAdd: (part: Part) => void

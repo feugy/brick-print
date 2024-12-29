@@ -8,3 +8,9 @@ export interface Size {
   height: number
   unit: 'mm'
 }
+
+export interface Sticker {
+  id: string
+  size: Size
+  parts: Part[]
+}

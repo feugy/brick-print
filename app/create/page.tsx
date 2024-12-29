@@ -1,6 +1,11 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { PartSelector } from '@/components/PartSelector'
+import { PrintButton } from '@/components/PrintButton'
+import { Sticker } from '@/components/Sticker'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -8,124 +13,185 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { PartSelector } from '@/components/PartSelector'
-import { PrintButton } from '@/components/PrintButton'
-import { StickerLayout } from '@/components/StickerLayout'
-import type { Part, Size } from '@/lib/types'
+import type { Part, Size, Sticker as StickerType } from '@/lib/types'
+import { PlusCircle } from 'lucide-react'
+import { useCallback, useRef, useState } from 'react'
 
 const predefinedSizes: Size[] = [
   { width: 160, height: 40, unit: 'mm' },
   { width: 330, height: 60, unit: 'mm' },
-  { width: 35, height: 35, unit: 'mm' },
+  { width: 40, height: 40, unit: 'mm' },
 ]
 
-export default function CreateSticker() {
-  const [size, setSize] = useState<Size>(predefinedSizes[0])
+export default function CreatePage() {
+  const [stickers, setStickers] = useState<StickerType[]>([])
+  const [selectedSize, setSelectedSize] = useState<string>('0')
   const [customSize, setCustomSize] = useState<Size>({
-    width: 10,
-    height: 10,
+    width: 100,
+    height: 100,
     unit: 'mm',
   })
-  const [selected, setSelectedParts] = useState<Part[]>([])
   const printableRef = useRef<HTMLDivElement>(null)
 
-  const handleSizeChange = (value: string) => {
-    if (value === 'custom') {
-      setSize(customSize)
-    } else {
-      setSize(predefinedSizes[Number.parseInt(value)])
+  const handleAddSticker = useCallback(() => {
+    const size =
+      selectedSize === 'custom'
+        ? customSize
+        : predefinedSizes[Number(selectedSize)]
+    const sticker: StickerType = {
+      id: Date.now().toString(),
+      size,
+      parts: [],
     }
+    setStickers((stickers) => [sticker, ...stickers])
+    if (selectedSize === 'custom') {
+      setSelectedSize('0')
+    }
+  }, [customSize, selectedSize])
+
+  const handleRemoveSticker = (removed: StickerType) => {
+    setStickers((prevStickers) =>
+      prevStickers.filter(({ id }) => id !== removed.id)
+    )
+  }
+
+  const handleAddPart = (part: Part) => {
+    if (!stickers.length) return
+    addPart(stickers[0], part)
+  }
+
+  const addPart = ({ id }: StickerType, added: Part) => {
+    setStickers((stickers) =>
+      stickers.map((sticker) =>
+        sticker.id === id
+          ? {
+              ...sticker,
+              parts: [...sticker.parts, added],
+            }
+          : sticker
+      )
+    )
+  }
+
+  const handleRemovePart = ({ id }: StickerType, removed: Part) => {
+    setStickers((stickers) =>
+      stickers.map((sticker) =>
+        sticker.id === id
+          ? {
+              ...sticker,
+              parts: sticker.parts.filter(({ id }) => id !== removed.id),
+            }
+          : sticker
+      )
+    )
+  }
+
+  const handleEditPart = ({ id }: StickerType, updated: Part) => {
+    setStickers((stickers) =>
+      stickers.map((sticker) =>
+        sticker.id === id
+          ? {
+              ...sticker,
+              parts: sticker.parts.map((part) =>
+                part.id === updated.id ? updated : part
+              ),
+            }
+          : sticker
+      )
+    )
+  }
+
+  const handleSizeChange = (value: string) => {
+    setSelectedSize(value)
   }
 
   const handleCustomSizeChange = (
     dimension: 'width' | 'height',
     value: string
   ) => {
-    const newSize = { ...customSize, [dimension]: Number.parseInt(value) }
-    setCustomSize(newSize)
-    if (size.width === customSize.width && size.height === customSize.height) {
-      setSize(newSize)
-    }
+    setCustomSize((prev) => ({ ...prev, [dimension]: Number(value) }))
   }
-
-  const handleAdd = (part: Part) => {
-    setSelectedParts([...selected, part])
-  }
-
-  const handleRemove = (part: Part) => {
-    setSelectedParts(selected.filter(({ id }) => id !== part.id))
-  }
-
-  const handleEdit = (updatedPart: Part) => {
-    setSelectedParts(
-      selected.map((p) => (p.id === updatedPart.id ? updatedPart : p))
-    )
-  }
-
-  const currentSize =
-    size.width === customSize.width && size.height === customSize.height
-      ? customSize
-      : size
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Create New Sticker</h1>
+      <h1 className="text-3xl font-bold mb-6">Create New Stickers</h1>
 
-      <div className="mb-4">
-        <Label htmlFor="size">Sticker Size</Label>
-        <Select defaultValue="0" onValueChange={handleSizeChange}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {predefinedSizes.map((s, index) => (
-              <SelectItem
-                key={`${s.width}x${s.height}`}
-                value={index.toString()}
-              >
-                {s.width} x {s.height} ({s.unit})
-              </SelectItem>
-            ))}
-            <SelectItem value="custom">Custom</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="mb-4 space-y-4">
+        <div>
+          <Label htmlFor="size">Sticker Size</Label>
+          <Select value={selectedSize} onValueChange={handleSizeChange}>
+            <SelectTrigger id="size">
+              <SelectValue placeholder="Select a size" />
+            </SelectTrigger>
+            <SelectContent>
+              {predefinedSizes.map((size, index) => (
+                <SelectItem
+                  key={`${size.width}x${size.height}`}
+                  value={index.toString()}
+                >
+                  {size.width} x {size.height} ({size.unit})
+                </SelectItem>
+              ))}
+              <SelectItem value="custom">Custom</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {selectedSize === 'custom' && (
+          <div className="flex gap-4">
+            <div>
+              <Label htmlFor="custom-width">Width (mm)</Label>
+              <Input
+                id="custom-width"
+                type="number"
+                value={customSize.width}
+                onChange={(e) =>
+                  handleCustomSizeChange('width', e.target.value)
+                }
+              />
+            </div>
+            <div>
+              <Label htmlFor="custom-height">Height (mm)</Label>
+              <Input
+                id="custom-height"
+                type="number"
+                value={customSize.height}
+                onChange={(e) =>
+                  handleCustomSizeChange('height', e.target.value)
+                }
+              />
+            </div>
+          </div>
+        )}
+
+        <Button onClick={handleAddSticker}>
+          <PlusCircle className="mr-2" /> Add New Sticker
+        </Button>
       </div>
 
-      {currentSize === customSize && (
-        <div className="flex gap-4 mb-4">
-          <div>
-            <Label htmlFor="custom-width">Width</Label>
-            <Input
-              id="custom-width"
-              type="number"
-              value={customSize.width}
-              onChange={(e) => handleCustomSizeChange('width', e.target.value)}
-            />
-          </div>
-          <div>
-            <Label htmlFor="custom-height">Height</Label>
-            <Input
-              id="custom-height"
-              type="number"
-              value={customSize.height}
-              onChange={(e) => handleCustomSizeChange('height', e.target.value)}
-            />
-          </div>
+      <PartSelector
+        onAdd={handleAddPart}
+        selected={stickers.flatMap((s) => s.parts)}
+      />
+
+      <div className="flex flex-row flex-wrap gap-2" ref={printableRef}>
+        {stickers.map((sticker) => (
+          <Sticker
+            key={sticker.id}
+            size={sticker.size}
+            parts={sticker.parts}
+            onRemovePart={(part) => handleRemovePart(sticker, part)}
+            onEditPart={(part) => handleEditPart(sticker, part)}
+            onRemove={() => handleRemoveSticker(sticker)}
+          />
+        ))}
+      </div>
+
+      {stickers.length > 0 && (
+        <div className="mt-4">
+          <PrintButton ref={printableRef} />
         </div>
       )}
-
-      <PartSelector onAdd={handleAdd} selected={selected} />
-      <div ref={printableRef}>
-        <StickerLayout
-          size={currentSize}
-          parts={selected}
-          onRemove={handleRemove}
-          onEdit={handleEdit}
-        />
-      </div>
-      <PrintButton ref={printableRef} />
     </div>
   )
 }

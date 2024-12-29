@@ -11,13 +11,13 @@ import SearchField from '@/components/SearchField'
 import type { Part } from '@/lib/types'
 
 interface PartSelectorProps {
-  onAddBrick: (part: Part) => void
-  selectedBricks: Part[]
+  onAdd: (part: Part) => void
+  selected: Part[]
 }
 
-export default function PartSelector({
-  onAddBrick,
-  selectedBricks,
+export function PartSelector({
+  onAdd: onAddBrick,
+  selected: selectedBricks,
 }: PartSelectorProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState<Part[]>([])
@@ -75,9 +75,9 @@ export default function PartSelector({
         </PopoverTrigger>
         <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]">
           <SearchResults
-            onSelectPart={handleAddBrick}
-            searchResults={searchResults}
-            selectedBricks={selectedBricks}
+            onSelect={handleAddBrick}
+            results={searchResults}
+            selected={selectedBricks}
           />
         </PopoverContent>
       </Popover>

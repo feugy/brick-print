@@ -8,21 +8,21 @@ interface Part {
 }
 
 interface SearchResultsProps {
-  searchResults: Part[]
-  selectedBricks: Part[]
+  results: Part[]
+  selected: Part[]
   size?: number
-  onSelectPart: (part: Part) => void
+  onSelect: (part: Part) => void
 }
 
 export function SearchResults({
-  searchResults,
-  selectedBricks,
-  onSelectPart,
+  results,
+  selected,
+  onSelect,
   size = 150,
 }: SearchResultsProps) {
   const gridRef = useRef<HTMLDivElement>(null)
 
-  if (searchResults.length === 0) {
+  if (results.length === 0) {
     return null
   }
 
@@ -35,13 +35,13 @@ export function SearchResults({
           gridTemplateColumns: `repeat(auto-fill, minmax(${size}px, 1fr))`,
         }}
       >
-        {searchResults.map((part) => (
+        {results.map((part) => (
           <button
-            disabled={selectedBricks.some(({ id }) => id === part.id)}
+            disabled={selected.some(({ id }) => id === part.id)}
             key={part.id}
             className={`flex flex-col items-center justify-center p-2 border rounded cursor-pointer transition-colors 
                 disabled:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-            onClick={() => onSelectPart(part)}
+            onClick={() => onSelect(part)}
             type="button"
           >
             <PartImage part={part} />

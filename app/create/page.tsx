@@ -10,8 +10,8 @@ import {
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import PartSelector from '@/components/PartSelector'
-import StickerLayout from '@/components/StickerLayout'
+import { PartSelector } from '@/components/PartSelector'
+import { StickerLayout } from '@/components/StickerLayout'
 import { PrintButton } from '@/components/PrintButton'
 import type { Part, Size } from '@/lib/types'
 
@@ -28,7 +28,7 @@ export default function CreateSticker() {
     height: 10,
     unit: 'mm',
   })
-  const [selectedBricks, setSelectedBricks] = useState<Part[]>([])
+  const [selected, setSelectedParts] = useState<Part[]>([])
 
   const handleSizeChange = (value: string) => {
     if (value === 'custom') {
@@ -49,8 +49,18 @@ export default function CreateSticker() {
     }
   }
 
-  const handleAddBrick = (brick: Part) => {
-    setSelectedBricks([...selectedBricks, brick])
+  const handleAdd = (part: Part) => {
+    setSelectedParts([...selected, part])
+  }
+
+  const handleRemove = (part: Part) => {
+    setSelectedParts(selected.filter(({ id }) => id !== part.id))
+  }
+
+  const handleEdit = (updatedPart: Part) => {
+    setSelectedParts(
+      selected.map((p) => (p.id === updatedPart.id ? updatedPart : p))
+    )
   }
 
   const currentSize =
@@ -64,13 +74,16 @@ export default function CreateSticker() {
 
       <div className="mb-4">
         <Label htmlFor="size">Sticker Size</Label>
-        <Select onValueChange={handleSizeChange}>
-          <SelectTrigger id="size">
-            <SelectValue placeholder="Select size" />
+        <Select defaultValue="0" onValueChange={handleSizeChange}>
+          <SelectTrigger>
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {predefinedSizes.map((s, index) => (
-              <SelectItem key={index} value={index.toString()}>
+              <SelectItem
+                key={`${s.width}x${s.height}`}
+                value={index.toString()}
+              >
                 {s.width} x {s.height} ({s.unit})
               </SelectItem>
             ))}
@@ -102,12 +115,14 @@ export default function CreateSticker() {
         </div>
       )}
 
-      <PartSelector
-        onAddBrick={handleAddBrick}
-        selectedBricks={selectedBricks}
+      <PartSelector onAdd={handleAdd} selected={selected} />
+      <StickerLayout
+        size={currentSize}
+        parts={selected}
+        onRemove={handleRemove}
+        onEdit={handleEdit}
       />
-      <StickerLayout size={currentSize} bricks={selectedBricks} />
-      <PrintButton size={currentSize} bricks={selectedBricks} />
+      <PrintButton size={currentSize} parts={selected} />
     </div>
   )
 }

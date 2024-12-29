@@ -3,10 +3,17 @@ import type { Part, Size } from '@/lib/types'
 
 interface StickerLayoutProps {
   size: Size
-  bricks: Part[]
+  parts: Part[]
+  onRemove?: (part: Part) => void
+  onEdit?: (part: Part) => void
 }
 
-export function StickerLayout({ size, bricks }: StickerLayoutProps) {
+export function StickerLayout({
+  size,
+  parts,
+  onRemove,
+  onEdit,
+}: StickerLayoutProps) {
   const containerStyle = {
     width: `${size.width}mm`,
     height: `${size.height}mm`,
@@ -16,13 +23,16 @@ export function StickerLayout({ size, bricks }: StickerLayoutProps) {
   return (
     <div
       style={containerStyle}
-      className="relative flex flex-row flex-wrap items-start content-start gap-1 p-1 overflow-hidden"
+      className="relative flex flex-row flex-wrap items-start content-start gap-0.5 p-0.5 overflow-hidden"
     >
-      {bricks.map((part) => (
-        <PartLabel key={part.id} part={part} />
+      {parts.map((part) => (
+        <PartLabel
+          key={part.id}
+          part={part}
+          onRemove={onRemove}
+          onEdit={onEdit}
+        />
       ))}
     </div>
   )
 }
-
-export default StickerLayout

@@ -7,10 +7,10 @@ import { StickerLayout } from './StickerLayout'
 
 interface PrintButtonProps {
   size: Size
-  bricks: Part[]
+  parts: Part[]
 }
 
-export function PrintButton({ size, bricks }: PrintButtonProps) {
+export function PrintButton({ size, parts }: PrintButtonProps) {
   const contentRef = useRef<HTMLDivElement>(null)
 
   const handlePrint = () => {
@@ -60,7 +60,7 @@ export function PrintButton({ size, bricks }: PrintButtonProps) {
   return (
     <>
       <div ref={contentRef} className="hidden">
-        <StickerLayout size={size} bricks={bricks} />
+        <StickerLayout size={size} parts={parts} />
       </div>
       <Button onClick={handlePrint} className="mt-4">
         Print Sticker

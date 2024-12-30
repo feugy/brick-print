@@ -13,7 +13,6 @@ interface PartLabelProps {
 
 export function PartLabel({ part, onRemove, onEdit }: PartLabelProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-
   return (
     <div className="flex items-center gap-1 h-8 p-0.5 relative group/part">
       <PartImage part={part} className="handle cursor-move w-7 h-7" />
@@ -21,7 +20,8 @@ export function PartLabel({ part, onRemove, onEdit }: PartLabelProps) {
         <span className="font-medium whitespace-pre-wrap">{part.name}</span>
         <span className="text-gray-500 truncate">{part.id}</span>
       </div>
-      <div className="z-10 absolute right-0 top-0 h-full flex gap-1 items-center opacity-0 group-hover/part:opacity-100 group-focus-within/part:opacity-100 transition-opacity print:hidden">
+
+      <div className="z-10 absolute right-0 top-0 flex flex-col gap-1 items-center opacity-0 group-hover/part:opacity-100 group-focus-within/part:opacity-100 transition-opacity print:hidden">
         {onEdit && (
           <Button
             size="icon"

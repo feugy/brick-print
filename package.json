@@ -30,7 +30,8 @@
     "sortablejs": "^1.15.6",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "use-debounce": "^10.0.4"
+    "use-debounce": "^10.0.4",
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

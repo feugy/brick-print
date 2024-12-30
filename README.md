@@ -1,6 +1,5 @@
 # TODO
 
-- fix: drag to a different sticker
 - keyboard navigation in search results
 
 # v0 Chat

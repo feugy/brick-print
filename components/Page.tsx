@@ -1,25 +1,13 @@
 import { PrintButton } from '@/components/PrintButton'
 import { Sticker } from '@/components/Sticker'
-import type { Sticker as StickerType } from '@/lib/types'
+import { useStore } from '@/hooks/use-store'
 import { useRef } from 'react'
 
-interface PageProps {
-  stickers: StickerType[]
-  onEdit: (stickers: StickerType[]) => void
-}
-
-export function Page({ stickers, onEdit }: PageProps) {
+export function Page() {
+  const stickers = useStore((state) => state.stickers)
+  const updateSticker = useStore((state) => state.updateSticker)
+  const removeSticker = useStore((state) => state.removeSticker)
   const printableRef = useRef<HTMLDivElement>(null)
-
-  const handleRemove = (removed: StickerType) => {
-    onEdit(stickers.filter(({ id }) => id !== removed.id))
-  }
-
-  const handleEdit = (updated: StickerType) => {
-    onEdit(
-      stickers.map((sticker) => (sticker.id === updated.id ? updated : sticker))
-    )
-  }
 
   return (
     <>
@@ -28,8 +16,8 @@ export function Page({ stickers, onEdit }: PageProps) {
           <Sticker
             key={sticker.id}
             sticker={sticker}
-            onEdit={handleEdit}
-            onRemove={handleRemove}
+            onEdit={updateSticker}
+            onRemove={removeSticker}
           />
         ))}
       </div>

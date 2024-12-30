@@ -1,7 +1,7 @@
 # TODO
 
+- fix: drag to a different sticker
 - keyboard navigation in search results
-- drag part to empty sticker
 
 # v0 Chat
 

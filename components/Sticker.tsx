@@ -2,14 +2,15 @@
 
 import { PartLabel } from '@/components/PartLabel'
 import { StickerControl } from '@/components/StickerControl'
-import type { Alignment, Part, Sticker as Type } from '@/lib/types'
+import type { Alignment, Part, Size, Sticker as Type } from '@/lib/types'
 import { Scaling } from 'lucide-react'
-import { Resizable, type ResizeCallback } from 're-resizable'
+import { type NumberSize, Resizable, type ResizeCallback } from 're-resizable'
 import { useState } from 'react'
+import { ReactSortable } from 'react-sortablejs'
 
 interface StickerProps {
   sticker: Type
-  onEdit: (sticker: Type) => void
+  onEdit: (sticker: Type, added?: Part) => void
   onRemove: (sticker: Type) => void
 }
 
@@ -33,34 +34,29 @@ export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
   }
 
   const handleResized: ResizeCallback = (event, direction, ref, delta) => {
-    const newSize = {
-      width: sticker.size.width + Math.round(pxToMm(delta.width)),
-      height: sticker.size.height + Math.round(pxToMm(delta.height)),
-    }
-    setCurrentSize(newSize)
-    onEdit({
-      ...sticker,
-      size: newSize,
-    })
+    const size = computeSize(sticker.size, delta)
+    setCurrentSize(size)
+    onEdit({ ...sticker, size })
   }
 
   const handleResize: ResizeCallback = (event, direction, ref, delta) => {
-    setCurrentSize({
-      width: sticker.size.width + Math.round(pxToMm(delta.width)),
-      height: sticker.size.height + Math.round(pxToMm(delta.height)),
+    setCurrentSize(computeSize(sticker.size, delta))
+  }
+
+  const handleSort = (parts: Part[]) => {
+    onEdit({
+      ...sticker,
+      parts: parts.map(({ id, name }) => ({ id, name })),
     })
   }
 
-  const handleChangeAlignment = (newAlignment: Alignment) => {
-    onEdit({
-      ...sticker,
-      alignment: newAlignment,
-    })
+  const handleChangeAlignment = (alignment: Alignment) => {
+    onEdit({ ...sticker, alignment })
   }
 
   return (
     <Resizable
-      className={`gap-1.5 p-0.5 relative overflow-visible flex flex-row flex-wrap  ${getAlignmentClass(sticker.alignment)} border border-gray-400 group/sticker`}
+      className="relative overflow-visible border border-gray-400 group/sticker"
       enable={{ right: true, bottom: true, bottomRight: true }}
       size={{
         width: mmToPx(sticker.size.width),
@@ -72,14 +68,22 @@ export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
       onResize={handleResize}
       onResizeStop={handleResized}
     >
-      {sticker.parts.map((part) => (
-        <PartLabel
-          key={part.id}
-          part={part}
-          onRemove={handleRemove}
-          onEdit={handleEdit}
-        />
-      ))}
+      <ReactSortable
+        group="shared"
+        handle=".handle"
+        className={`flex h-full flex-wrap gap-1.5 p-0.5 ${getAlignmentClass(sticker.alignment)}`}
+        list={sticker.parts}
+        setList={handleSort}
+      >
+        {sticker.parts.map((part) => (
+          <PartLabel
+            key={part.id}
+            part={part}
+            onRemove={handleRemove}
+            onEdit={handleEdit}
+          />
+        ))}
+      </ReactSortable>
       <StickerControl
         onRemove={() => onRemove(sticker)}
         alignment={sticker.alignment}
@@ -98,9 +102,16 @@ function mmToPx(mm: number) {
   return mm * 3.7795275591
 }
 
+function computeSize(size: Size, delta: NumberSize) {
+  return {
+    width: size.width + Math.round(pxToMm(delta.width)),
+    height: size.height + Math.round(pxToMm(delta.height)),
+  }
+}
+
 function CustomHandle() {
   return (
-    <div className="bg-card print:hidden">
+    <div className="bg-card print:hidden -mt-1 -ml-1">
       <Scaling className="rotate-90" />
     </div>
   )

@@ -21,16 +21,13 @@ export default function CreatePage() {
 
   const handleAddPart = (part: Part) => {
     if (!stickers.length) return
-    addPart(stickers[0], part)
-  }
-
-  const addPart = ({ id }: Sticker, added: Part) => {
+    const { id } = stickers[0]
     setStickers((stickers) =>
       stickers.map((sticker) =>
         sticker.id === id
           ? {
               ...sticker,
-              parts: [...sticker.parts, added],
+              parts: [...sticker.parts, part],
             }
           : sticker
       )

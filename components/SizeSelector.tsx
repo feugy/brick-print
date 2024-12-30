@@ -19,26 +19,24 @@ interface SizeSelectorProps {
 
 export function SizeSelector({ onAdd }: SizeSelectorProps) {
   const handleSizeChange = (value: string) => {
-    const [width, height] = value.split('x').map(Number)
-    const size = { width, height }
     onAdd({
       id: Date.now().toString(),
-      size,
+      size: predefinedSizes[Number.parseInt(value)],
       alignment: 'top-left',
       parts: [],
     })
   }
 
   return (
-    <Select onValueChange={handleSizeChange}>
+    <Select value="" onValueChange={handleSizeChange}>
       <SelectTrigger className="w-[200px]">
         <SelectValue placeholder="Select a size" />
       </SelectTrigger>
       <SelectContent>
-        {predefinedSizes.map((size) => (
+        {predefinedSizes.map((size, index) => (
           <SelectItem
             key={`${size.width}x${size.height}`}
-            value={`${size.width}x${size.height}`}
+            value={index.toString()}
           >
             {`${size.width} x ${size.height} mm`}
           </SelectItem>

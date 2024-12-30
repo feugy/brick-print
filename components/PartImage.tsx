@@ -22,6 +22,7 @@ export function PartImage({
       <img
         alt={part.name}
         className="h-auto w-auto max-h-full"
+        draggable={false}
         style={{ zoom: 0.5 }}
         src={`https://brickarchitect.com/content/parts-veryhighcontrast/${part.id}.png`}
       />

@@ -1,4 +1,3 @@
-import type { Alignment } from '@/lib/types'
 import {
   Select,
   SelectContent,
@@ -6,12 +5,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import type { Alignment } from '@/lib/types'
 import {
+  AlignEndHorizontal,
+  AlignHorizontalJustifyCenter,
+  AlignHorizontalJustifyStart,
   AlignStartHorizontal,
   AlignVerticalJustifyEnd,
-  AlignEndHorizontal,
-  AlignHorizontalJustifyStart,
-  AlignHorizontalJustifyCenter,
 } from 'lucide-react'
 
 interface AlignmentSelectorProps {
@@ -37,7 +37,7 @@ export function AlignmentSelector({
 }: AlignmentSelectorProps) {
   return (
     <Select value={alignment} onValueChange={onAlignmentChange}>
-      <SelectTrigger className="h-8 px-2 bg-primary text-primary-foreground">
+      <SelectTrigger className="h-8 px-1 w-auto gap-1 bg-primary text-primary-foreground">
         <SelectValue>{alignmentIcons[alignment]}</SelectValue>
       </SelectTrigger>
       <SelectContent side="top" className="min-w-0">

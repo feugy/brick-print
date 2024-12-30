@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import { PartLabel } from '@/components/PartLabel'
 import { StickerControl } from '@/components/StickerControl'
 import type { Alignment, Part, Sticker as Type } from '@/lib/types'
+import { Scaling } from 'lucide-react'
 import { Resizable, type ResizeCallback } from 're-resizable'
+import { useState } from 'react'
 
 interface StickerProps {
   sticker: Type
@@ -59,11 +60,14 @@ export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
 
   return (
     <Resizable
-      className={`relative flex flex-row flex-wrap  ${getAlignmentClass(sticker.alignment)} border border-gray-400 gap-1.5 p-[2px] overflow-hidden hover:border-2 hover:p-[1px] group/sticker`}
+      className={`gap-1.5 p-0.5 relative overflow-visible flex flex-row flex-wrap  ${getAlignmentClass(sticker.alignment)} border border-gray-400 group/sticker`}
       enable={{ right: true, bottom: true, bottomRight: true }}
       size={{
         width: mmToPx(sticker.size.width),
         height: mmToPx(sticker.size.height),
+      }}
+      handleComponent={{
+        bottomRight: <CustomHandle />,
       }}
       onResize={handleResize}
       onResizeStop={handleResized}
@@ -92,6 +96,14 @@ function pxToMm(px: number) {
 
 function mmToPx(mm: number) {
   return mm * 3.7795275591
+}
+
+function CustomHandle() {
+  return (
+    <div className="bg-card print:hidden">
+      <Scaling className="rotate-90" />
+    </div>
+  )
 }
 
 function getAlignmentClass(alignment: Alignment): string {

@@ -80,21 +80,24 @@ export function PartSelector({
             gridTemplateColumns: `repeat(auto-fill, minmax(${size}px, 1fr))`,
           }}
         >
-          {searchResults.map((part) => (
-            <CommandItem
-              disabled={selected.some(({ id }) => id === part.id)}
-              key={part.id}
-              value={part.name}
-              className="flex flex-col items-center justify-start p-2 border rounded cursor-pointer transition-colors"
-              onSelect={() => onAdd(part)}
-            >
-              <PartImage part={part} className="max-h-10" />
-              <p className="text-xs font-medium text-center mt-2 w-full whitespace-pre-wrap">
-                {part.name}
-              </p>
-              <p className="text-xs text-gray-500">{part.id}</p>
-            </CommandItem>
-          ))}
+          {searchResults.map((part) => {
+            const disabled = selected.some(({ id }) => id === part.id)
+            return (
+              <CommandItem
+                disabled={disabled}
+                key={part.id}
+                value={part.name}
+                className={`flex flex-col items-center justify-start p-2 border rounded cursor-pointer transition-colors ${disabled ? 'bg-muted' : ''}`}
+                onSelect={() => onAdd(part)}
+              >
+                <PartImage part={part} className="max-h-10" />
+                <p className="text-xs font-medium text-center mt-2 w-full whitespace-pre-wrap">
+                  {part.name}
+                </p>
+                <p className="text-xs text-gray-500">{part.id}</p>
+              </CommandItem>
+            )
+          })}
         </div>
       </CommandList>
     </Command>

@@ -24,6 +24,7 @@ export function SizeSelector({ onAdd }: SizeSelectorProps) {
     onAdd({
       id: Date.now().toString(),
       size,
+      alignment: 'top-left',
       parts: [],
     })
   }

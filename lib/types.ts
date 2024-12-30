@@ -8,8 +8,20 @@ export interface Size {
   height: number
 }
 
+export type Alignment =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'middle-left'
+  | 'middle-center'
+  | 'middle-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right'
+
 export interface Sticker {
   id: string
   size: Size
   parts: Part[]
+  alignment: Alignment
 }

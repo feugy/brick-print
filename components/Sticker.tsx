@@ -2,9 +2,10 @@
 
 import { PartLabel } from '@/components/PartLabel'
 import { Button } from '@/components/ui/button'
-import type { Part, Sticker as Type } from '@/lib/types'
+import type { Alignment, Part, Sticker as Type } from '@/lib/types'
 import { X } from 'lucide-react'
 import { Resizable, type ResizeCallback } from 're-resizable'
+import { AlignmentSelector } from '@/components/AlignmentSelector'
 
 interface StickerProps {
   sticker: Type
@@ -40,9 +41,16 @@ export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
     })
   }
 
+  const handleChangeAlignment = (newAlignment: Alignment) => {
+    onEdit({
+      ...sticker,
+      alignment: newAlignment,
+    })
+  }
+
   return (
     <Resizable
-      className="relative flex flex-row flex-wrap items-start border border-gray-400 content-start gap-1.5 p-0.5 overflow-hidden group/sticker"
+      className={`relative flex flex-row flex-wrap  ${getAlignmentClass(sticker.alignment)} border border-gray-400 gap-1.5 p-[2px] overflow-hidden hover:border-2 hover:p-[1px] group/sticker`}
       enable={{ right: true, bottom: true, bottomRight: true }}
       size={{
         width: mmToPx(sticker.size.width),
@@ -59,15 +67,23 @@ export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
         />
       ))}
       {onRemove && (
-        <Button
-          variant="destructive"
-          size="icon"
-          className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover/sticker:opacity-100 focus:opacity-100 transition-opacity print:hidden"
-          onClick={() => onRemove(sticker)}
-        >
-          <X />
-          <span className="sr-only">Remove part</span>
-        </Button>
+        <>
+          <Button
+            variant="destructive"
+            size="icon"
+            className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover/sticker:opacity-100 focus:opacity-100 transition-opacity print:hidden"
+            onClick={() => onRemove(sticker)}
+          >
+            <X />
+            <span className="sr-only">Remove part</span>
+          </Button>
+          <div className="absolute top-10 right-2 opacity-0 group-hover/sticker:opacity-100 focus-within:opacity-100 transition-opacity print:hidden">
+            <AlignmentSelector
+              alignment={sticker.alignment}
+              onAlignmentChange={handleChangeAlignment}
+            />
+          </div>
+        </>
       )}
     </Resizable>
   )
@@ -79,4 +95,27 @@ function pxToMm(px: number) {
 
 function mmToPx(mm: number) {
   return mm * 3.7795275591
+}
+
+function getAlignmentClass(alignment: Alignment): string {
+  switch (alignment) {
+    case 'top-left':
+      return 'justify-start content-start'
+    case 'top-center':
+      return 'justify-center content-start'
+    case 'top-right':
+      return 'justify-end content-start'
+    case 'middle-left':
+      return 'justify-start content-center'
+    case 'middle-center':
+      return 'justify-center content-center'
+    case 'middle-right':
+      return 'justify-end content-center'
+    case 'bottom-left':
+      return 'justify-start content-end'
+    case 'bottom-center':
+      return 'justify-center content-end'
+    case 'bottom-right':
+      return 'justify-end content-end'
+  }
 }

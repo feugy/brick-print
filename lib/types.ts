@@ -6,7 +6,6 @@ export interface Part {
 export interface Size {
   width: number
   height: number
-  unit: 'mm'
 }
 
 export interface Sticker {

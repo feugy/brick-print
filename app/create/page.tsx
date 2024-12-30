@@ -1,5 +1,6 @@
 'use client'
 
+import { Instructions } from '@/components/Instructions'
 import { Page } from '@/components/Page'
 import { PartSelector } from '@/components/PartSelector'
 import { SizeSelector } from '@/components/SizeSelector'
@@ -8,6 +9,7 @@ import { useMemo, useState } from 'react'
 
 export default function CreatePage() {
   const [stickers, setStickers] = useState<Sticker[]>([])
+  const [isInstructionsOpen, setIsInstructionsOpen] = useState(true)
   const selectedParts = useMemo(
     () => stickers.flatMap((s) => s.parts),
     [stickers]
@@ -41,8 +43,18 @@ export default function CreatePage() {
         Create New Stickers
       </h1>
       <div className="flex flex-col gap-4 p-4">
+        <Instructions
+          open={isInstructionsOpen}
+          onToggle={setIsInstructionsOpen}
+        />
         <SizeSelector onAdd={handleAddSticker} />
-        <PartSelector onAdd={handleAddPart} selected={selectedParts} />
+        {stickers.length > 0 && (
+          <PartSelector
+            onAdd={handleAddPart}
+            selected={selectedParts}
+            onSearch={() => setIsInstructionsOpen(false)}
+          />
+        )}
         <Page stickers={stickers} onEdit={setStickers} />
       </div>
     </div>

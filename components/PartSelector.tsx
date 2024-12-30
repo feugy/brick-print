@@ -14,12 +14,14 @@ import { useDebouncedCallback } from 'use-debounce'
 
 interface PartSelectorProps {
   onAdd: (part: Part) => void
+  onSearch: (text: string) => void
   selected: Part[]
   size?: number
 }
 
 export function PartSelector({
   onAdd,
+  onSearch,
   selected,
   size = 128,
 }: PartSelectorProps) {
@@ -35,6 +37,7 @@ export function PartSelector({
     if (isLoading || searchTerm.length < 2) return
 
     setIsLoading(true)
+    onSearch(searchTerm)
     try {
       const response = await fetch(
         `/api/search-parts?q=${encodeURIComponent(searchTerm)}`

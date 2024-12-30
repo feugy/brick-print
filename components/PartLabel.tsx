@@ -52,7 +52,7 @@ export function PartLabel({
         <span className="font-medium whitespace-pre-wrap">{part.name}</span>
         <span className="text-gray-500 truncate">{part.id}</span>
       </div>
-      <div className="z-10 absolute right-0 top-0 h-full flex gap-1 items-center opacity-0 group-hover/part:opacity-100 group-focus-within/part:opacity-100 transition-opacity">
+      <div className="z-10 absolute right-0 top-0 h-full flex gap-1 items-center opacity-0 group-hover/part:opacity-100 group-focus-within/part:opacity-100 transition-opacity print:hidden">
         {onEdit && (
           <Button
             size="icon"

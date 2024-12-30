@@ -94,9 +94,7 @@ export function Page({ stickers, onEdit }: PageProps) {
         {moved ? <PartLabel part={moved} dragOverlay /> : null}
       </DragOverlay>
       {stickers.length > 0 && (
-        <div className="mt-4">
-          <PrintButton ref={printableRef} />
-        </div>
+        <PrintButton ref={printableRef} className="self-center" />
       )}
     </DndContext>
   )

@@ -1,6 +1,3 @@
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -9,13 +6,11 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import type { Size, Sticker } from '@/lib/types'
-import { PlusCircle } from 'lucide-react'
-import { useState } from 'react'
 
 const predefinedSizes: Size[] = [
-  { width: 160, height: 40, unit: 'mm' },
-  { width: 330, height: 60, unit: 'mm' },
-  { width: 40, height: 40, unit: 'mm' },
+  { width: 160, height: 40 },
+  { width: 330, height: 60 },
+  { width: 40, height: 40 },
 ]
 
 interface SizeSelectorProps {
@@ -23,25 +18,9 @@ interface SizeSelectorProps {
 }
 
 export function SizeSelector({ onAdd }: SizeSelectorProps) {
-  const [selectedSize, setSelectedSize] = useState<string>('0')
-  const [customSize, setCustomSize] = useState<Size>({
-    width: 100,
-    height: 100,
-    unit: 'mm',
-  })
-
   const handleSizeChange = (value: string) => {
-    setSelectedSize(value)
-  }
-
-  const handleAdd = () => {
-    const size =
-      selectedSize === 'custom'
-        ? customSize
-        : predefinedSizes[Number(selectedSize)]
-    if (selectedSize === 'custom') {
-      setSelectedSize('0')
-    }
+    const [width, height] = value.split('x').map(Number)
+    const size = { width, height }
     onAdd({
       id: Date.now().toString(),
       size,
@@ -49,61 +28,21 @@ export function SizeSelector({ onAdd }: SizeSelectorProps) {
     })
   }
 
-  const handleCustomSizeChange = (
-    dimension: 'width' | 'height',
-    value: string
-  ) => {
-    setCustomSize((prev) => ({ ...prev, [dimension]: Number(value) }))
-  }
-
   return (
-    <div className="mb-4 space-y-4">
-      <div>
-        <Label htmlFor="size">Sticker Size</Label>
-        <Select value={selectedSize} onValueChange={handleSizeChange}>
-          <SelectTrigger id="size">
-            <SelectValue placeholder="Select a size" />
-          </SelectTrigger>
-          <SelectContent>
-            {predefinedSizes.map((size, index) => (
-              <SelectItem
-                key={`${size.width}x${size.height}`}
-                value={index.toString()}
-              >
-                {size.width} x {size.height} ({size.unit})
-              </SelectItem>
-            ))}
-            <SelectItem value="custom">Custom</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {selectedSize === 'custom' && (
-        <div className="flex gap-4">
-          <div>
-            <Label htmlFor="custom-width">Width (mm)</Label>
-            <Input
-              id="custom-width"
-              type="number"
-              value={customSize.width}
-              onChange={(e) => handleCustomSizeChange('width', e.target.value)}
-            />
-          </div>
-          <div>
-            <Label htmlFor="custom-height">Height (mm)</Label>
-            <Input
-              id="custom-height"
-              type="number"
-              value={customSize.height}
-              onChange={(e) => handleCustomSizeChange('height', e.target.value)}
-            />
-          </div>
-        </div>
-      )}
-
-      <Button onClick={handleAdd}>
-        <PlusCircle className="mr-2" /> Add New Sticker
-      </Button>
-    </div>
+    <Select onValueChange={handleSizeChange}>
+      <SelectTrigger className="w-[200px]">
+        <SelectValue placeholder="Select a size" />
+      </SelectTrigger>
+      <SelectContent>
+        {predefinedSizes.map((size) => (
+          <SelectItem
+            key={`${size.width}x${size.height}`}
+            value={`${size.width}x${size.height}`}
+          >
+            {`${size.width} x ${size.height} mm`}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   )
 }

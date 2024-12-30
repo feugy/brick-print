@@ -1,6 +1,8 @@
 # TODO
 
 - keyboard navigation in search results
+- drag part to empty sticker
+- control sticker alignment
 
 # v0 Chat
 

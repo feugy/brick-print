@@ -1,11 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { PartLabel } from '@/components/PartLabel'
-import { Button } from '@/components/ui/button'
+import { StickerControl } from '@/components/StickerControl'
 import type { Alignment, Part, Sticker as Type } from '@/lib/types'
-import { X } from 'lucide-react'
 import { Resizable, type ResizeCallback } from 're-resizable'
-import { AlignmentSelector } from '@/components/AlignmentSelector'
 
 interface StickerProps {
   sticker: Type
@@ -14,6 +13,8 @@ interface StickerProps {
 }
 
 export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
+  const [currentSize, setCurrentSize] = useState(sticker.size)
+
   const handleRemove = (removed: Part) => {
     onEdit({
       ...sticker,
@@ -31,13 +32,21 @@ export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
   }
 
   const handleResized: ResizeCallback = (event, direction, ref, delta) => {
+    const newSize = {
+      width: sticker.size.width + Math.round(pxToMm(delta.width)),
+      height: sticker.size.height + Math.round(pxToMm(delta.height)),
+    }
+    setCurrentSize(newSize)
     onEdit({
       ...sticker,
-      size: {
-        ...sticker.size,
-        width: sticker.size.width + Math.round(pxToMm(delta.width)),
-        height: sticker.size.height + Math.round(pxToMm(delta.height)),
-      },
+      size: newSize,
+    })
+  }
+
+  const handleResize: ResizeCallback = (event, direction, ref, delta) => {
+    setCurrentSize({
+      width: sticker.size.width + Math.round(pxToMm(delta.width)),
+      height: sticker.size.height + Math.round(pxToMm(delta.height)),
     })
   }
 
@@ -56,6 +65,7 @@ export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
         width: mmToPx(sticker.size.width),
         height: mmToPx(sticker.size.height),
       }}
+      onResize={handleResize}
       onResizeStop={handleResized}
     >
       {sticker.parts.map((part) => (
@@ -66,25 +76,12 @@ export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
           onEdit={handleEdit}
         />
       ))}
-      {onRemove && (
-        <>
-          <Button
-            variant="destructive"
-            size="icon"
-            className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover/sticker:opacity-100 focus:opacity-100 transition-opacity print:hidden"
-            onClick={() => onRemove(sticker)}
-          >
-            <X />
-            <span className="sr-only">Remove part</span>
-          </Button>
-          <div className="absolute top-10 right-2 opacity-0 group-hover/sticker:opacity-100 focus-within:opacity-100 transition-opacity print:hidden">
-            <AlignmentSelector
-              alignment={sticker.alignment}
-              onAlignmentChange={handleChangeAlignment}
-            />
-          </div>
-        </>
-      )}
+      <StickerControl
+        onRemove={() => onRemove(sticker)}
+        alignment={sticker.alignment}
+        onAlignmentChange={handleChangeAlignment}
+        size={currentSize}
+      />
     </Resizable>
   )
 }

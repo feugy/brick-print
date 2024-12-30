@@ -1,7 +1,8 @@
+import { Analytics } from '@vercel/analytics/next'
 import type { Metadata } from 'next'
+import { Jua, PT_Sans } from 'next/font/google'
 import type { ReactNode } from 'react'
 import './globals.css'
-import { Jua, PT_Sans } from 'next/font/google'
 
 const pt = PT_Sans({
   subsets: ['latin'],
@@ -25,7 +26,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${pt.variable} ${jua.variable} antialiased`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }

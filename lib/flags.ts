@@ -1,6 +1,7 @@
-import { unstable_flag as flag } from '@vercel/flags/next'
+import { flag } from '@vercel/flags/next'
+import { vercelAdapter } from '@vercel/flags-adapter-native'
 
-export const canSave = flag({
+export const canSave = flag<boolean>({
   key: 'can-save',
-  decide: () => false,
+  adapter: vercelAdapter(),
 })

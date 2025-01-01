@@ -14,12 +14,12 @@ const predefinedSizes: Size[] = [
 ]
 
 interface SizeSelectorProps {
-  onAdd: (sticker: Sticker) => void
+  onAdd?: (sticker: Sticker) => void
 }
 
 export function SizeSelector({ onAdd }: SizeSelectorProps) {
   const handleSizeChange = (value: string) => {
-    onAdd({
+    onAdd?.({
       id: Date.now().toString(),
       size: predefinedSizes[Number.parseInt(value)],
       alignment: 'top-left',

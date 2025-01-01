@@ -1,12 +1,8 @@
 import { improveQuery } from '@/lib/query'
 import { fixName } from '@/lib/text'
+import type { Part } from '@/lib/types'
 import * as cheerio from 'cheerio'
 import { NextResponse } from 'next/server'
-
-interface Part {
-  id: string
-  name: string
-}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)

@@ -1,4 +1,6 @@
+import { Toaster } from '@/components/ui/sonner'
 import { Analytics } from '@vercel/analytics/next'
+import { VercelToolbar } from '@vercel/toolbar/next'
 import type { Metadata } from 'next'
 import { Jua, PT_Sans } from 'next/font/google'
 import type { ReactNode } from 'react'
@@ -23,12 +25,16 @@ export const metadata: Metadata = {
   description: 'Make printable stickers for your Brick storage boxes.',
 }
 
+const shouldInjectToolbar = process.env.NODE_ENV === 'development'
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${pt.variable} ${jua.variable} antialiased`}>
       <body>
         {children}
+        <Toaster />
         <Analytics />
+        {shouldInjectToolbar && <VercelToolbar />}
       </body>
     </html>
   )

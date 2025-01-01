@@ -1,16 +1,20 @@
 'use client'
 
-import { type Store, buildStore } from '@/lib/build-store'
+import { buildStore } from '@/lib/build-store'
+import type { State, Store } from '@/lib/build-store'
 import { type ReactNode, createContext, useRef, useContext } from 'react'
 import { type StoreApi, useStore as useZustandStore } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 
 export const StoreContext = createContext<StoreApi<Store> | null>(null)
 
-export function StoreProvider({ children }: { children: ReactNode }) {
+export function StoreProvider({
+  children,
+  state,
+}: { children: ReactNode; state?: Partial<State> }) {
   const ref = useRef<StoreApi<Store>>(undefined)
   if (!ref.current) {
-    ref.current = buildStore()
+    ref.current = buildStore(state)
   }
   return (
     <StoreContext.Provider value={ref.current}>

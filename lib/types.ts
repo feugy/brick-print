@@ -25,3 +25,17 @@ export interface Sticker {
   parts: Part[]
   alignment: Alignment
 }
+
+export interface SaveResponse {
+  success: boolean
+  message: string
+}
+
+export interface Page {
+  id: string
+  stickers: Sticker[]
+}
+
+export type LoadResponse =
+  | { success: true; page: Page }
+  | { success: false; message: string }

@@ -1,4 +1,4 @@
-import { AlignmentSelector } from '@/components/AlignmentSelector'
+import { AlignmentSelector } from '@/components/alignment-selector'
 import { Button } from '@/components/ui/button'
 import type { Alignment, Size } from '@/lib/types'
 import { X } from 'lucide-react'

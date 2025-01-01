@@ -1,9 +1,9 @@
-import { PartImage } from '@/components/PartImage'
+import { PartImage } from '@/components/part-image'
 import { Button } from '@/components/ui/button'
 import type { Part } from '@/lib/types'
 import { Edit2, X } from 'lucide-react'
 import { useState } from 'react'
-import { EditPartModal } from './EditPartModal'
+import { EditPartModal } from './edit-part-modal'
 
 interface PartLabelProps {
   part: Part

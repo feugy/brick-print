@@ -15,3 +15,9 @@ Alternative images:
 - https://www.bricklink.com/ajax/renovate/catalog/getItemImageList.ajax?idItem=<id>
 - https://www.bricklink.com/ajax/renovate/catalog/getItemImageList.ajax?idItem=<id>
 - https://www.bricklink.com/ajax/renovate/catalog/getItemImageList.ajax?idItem=<id>
+
+CREATE USER brickprint LOGIN PASSWORD 'xxx';
+CREATE DATABASE brickprint OWNER brickprint;
+\c brickprint
+CREATE TABLE pages(id UUID PRIMARY KEY, stickers JSONB);
+ALTER TABLE pages OWNER TO bricklink;

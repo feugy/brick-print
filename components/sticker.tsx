@@ -1,7 +1,7 @@
 'use client'
 
-import { PartLabel } from '@/components/PartLabel'
-import { StickerControl } from '@/components/StickerControl'
+import { PartLabel } from '@/components/part-label'
+import { StickerControl } from '@/components/sticker-control'
 import type { Alignment, Part, Size, Sticker as Type } from '@/lib/types'
 import { Scaling } from 'lucide-react'
 import { type NumberSize, Resizable, type ResizeCallback } from 're-resizable'

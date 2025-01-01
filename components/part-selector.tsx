@@ -1,6 +1,6 @@
 'use client'
 
-import { PartImage } from '@/components/PartImage'
+import { PartImage } from '@/components/part-image'
 import {
   Command,
   CommandEmpty,
@@ -14,7 +14,7 @@ import { useDebouncedCallback } from 'use-debounce'
 
 interface PartSelectorProps {
   onAdd: (part: Part) => void
-  onSearch: (text: string) => void
+  onSearch?: (text: string) => void
   selected: Part[]
   size?: number
 }
@@ -37,7 +37,7 @@ export function PartSelector({
     if (isLoading || searchTerm.length < 2) return
 
     setIsLoading(true)
-    onSearch(searchTerm)
+    onSearch?.(searchTerm)
     try {
       const response = await fetch(
         `/api/search-parts?q=${encodeURIComponent(searchTerm)}`

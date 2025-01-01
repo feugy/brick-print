@@ -16,7 +16,10 @@ export function PrintButton({ className, ref }: PrintButtonProps) {
 
   return (
     <Button
-      onClick={() => print()}
+      onClick={(e) => {
+        e.preventDefault()
+        print()
+      }}
       className={`text-xl ${className}`}
       size="lg"
     >

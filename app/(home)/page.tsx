@@ -1,7 +1,7 @@
 import { Breadcrumb } from '@/components/breadcrumb'
 import { PageTitle } from '@/components/page-title'
 import { Button } from '@/components/ui/button'
-import { canSave } from '@/lib/flags'
+import { auth } from '@/lib/auth'
 import { list } from '@/lib/storage'
 import { PlusCircle } from 'lucide-react'
 import Link from 'next/link'
@@ -10,8 +10,10 @@ import { List } from './list'
 import { ListSkeleton } from './skeleton'
 
 export default async function Home() {
-  const withSaveButton = await canSave()
-  const data = list()
+  const session = await auth()
+  const data = session?.user
+    ? list()
+    : Promise.resolve({ success: true, pages: [] })
   return (
     <>
       <PageTitle>Brick Print</PageTitle>
@@ -25,11 +27,9 @@ export default async function Home() {
             <PlusCircle className="mr-2" /> Create New stickers
           </Button>
         </Link>
-        {withSaveButton && (
-          <Suspense fallback={<ListSkeleton />}>
-            <List data={data} />
-          </Suspense>
-        )}
+        <Suspense fallback={<ListSkeleton />}>
+          <List data={data} />
+        </Suspense>
       </div>
     </>
   )

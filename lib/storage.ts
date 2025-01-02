@@ -65,20 +65,22 @@ export async function save(_: SaveResponse, body: FormData) {
   }
 
   const { id, title, stickers } = parsed.data
-  let saved: Page | undefined
   const session = await auth()
   if (!session?.user?.email) {
     response.message = 'Not authenticated'
   } else {
+    const savedId = id ?? randomUUID()
     try {
-      saved = (
-        await sql`
+      console.log(
+        `saving page ${savedId} (title: '${title}') for owner ${session.user.email}`
+      )
+
+      await sql`
         INSERT INTO pages (id, title, stickers, owner)
-        VALUES (${id ?? randomUUID()}, ${title ?? makeTitle(stickers)}, ${sql.json(stickers)}, ${session.user.email})
+        VALUES (${savedId}, ${title ?? makeTitle(stickers)}, ${sql.json(stickers)}, ${session.user.email})
         ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, stickers = EXCLUDED.stickers
         RETURNING id
       `
-      )[0] as Page
 
       response.success = true
       response.message = 'Page saved'
@@ -86,8 +88,8 @@ export async function save(_: SaveResponse, body: FormData) {
       console.error(error)
       response.message = `Failed to save page: ${(error as Error).message}`
     }
-    if (!id && saved?.id) {
-      return redirect(`/${saved.id}`)
+    if (!id) {
+      return redirect(`/${savedId}`)
     }
   }
   return response
@@ -113,6 +115,7 @@ export async function load(id: string) {
     response.message = 'Not authenticated'
   } else {
     try {
+      console.log(`loading page ${id} for owner ${session.user.email}`)
       const rows = await sql<
         Page[]
       >`SELECT id, title, stickers FROM pages WHERE id = ${id} AND owner = ${session.user.email}`
@@ -136,6 +139,7 @@ export async function list() {
     response.message = 'Not authenticated'
   } else {
     try {
+      console.log(`list pages for owner ${session.user.email}`)
       const pages = await sql<
         Page[]
       >`SELECT id, title, stickers FROM pages WHERE owner = ${session.user.email}`

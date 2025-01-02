@@ -8,6 +8,7 @@ import { SizeSelector } from '@/components/size-selector'
 import { Sticker } from '@/components/sticker'
 import { useStore } from '@/hooks/use-store'
 import { save } from '@/lib/storage'
+import { useSession } from 'next-auth/react'
 import { useActionState, useEffect, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
 import { TitleBlock } from './title-block'
@@ -18,6 +19,7 @@ interface StickerPageProps {
 }
 
 export function StickerPage({ withText, withInstructions }: StickerPageProps) {
+  const { data: session } = useSession()
   const [instructionsOpen, setInstructionsOpen] = useStore((state) => [
     state.instructionsOpen,
     state.setInstructionsOpen,
@@ -51,8 +53,13 @@ export function StickerPage({ withText, withInstructions }: StickerPageProps) {
     }
   }, [formState])
 
+  const noSession = useMemo(() => !session?.user?.email, [session])
+
   return (
-    <form className="flex flex-col gap-4" action={formAction}>
+    <form
+      className="flex flex-col gap-4"
+      action={noSession ? undefined : formAction}
+    >
       {withInstructions && (
         <Instructions open={instructionsOpen} onToggle={setInstructionsOpen} />
       )}
@@ -80,7 +87,7 @@ export function StickerPage({ withText, withInstructions }: StickerPageProps) {
       {stickers.length > 0 && (
         <div className="flex flex-row gap-2 justify-center mt-2">
           <PrintButton ref={printableRef} />
-          <SaveButton />
+          <SaveButton noSession={noSession} />
         </div>
       )}
     </form>

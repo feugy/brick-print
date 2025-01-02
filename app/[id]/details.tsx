@@ -3,6 +3,7 @@
 import { StickerPage } from '@/components/sticker-page'
 import { StoreProvider } from '@/hooks/use-store'
 import type { LoadResponse } from '@/lib/types'
+import { SessionProvider } from 'next-auth/react'
 import { use } from 'react'
 
 interface DetailsProps {
@@ -15,8 +16,10 @@ export function Details(props: DetailsProps) {
     return <div>{data.message}</div>
   }
   return (
-    <StoreProvider state={data.page}>
-      <StickerPage withText />
-    </StoreProvider>
+    <SessionProvider>
+      <StoreProvider state={data.page}>
+        <StickerPage withText />
+      </StoreProvider>
+    </SessionProvider>
   )
 }

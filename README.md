@@ -1,6 +1,8 @@
 # TODO
 
 - keyboard navigation in search results
+- logging
+- api unit tests
 
 # v0 Chat
 

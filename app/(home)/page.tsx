@@ -13,14 +13,15 @@ export default async function Home() {
   const session = await auth()
   const data = session?.user
     ? list()
-    : Promise.resolve({ success: true, pages: [] })
+    : Promise.resolve({ success: true as const, pages: [] })
   return (
     <>
       <PageTitle>Brick Print</PageTitle>
       <div className="flex flex-col gap-4 p-4">
         <Breadcrumb />
         <p className="text-muted-foreground">
-          Create printable stickers for your Lego storage boxes.
+          {session?.user?.name ? `Hi ${session.user.name}! ` : ''}Create
+          printable stickers for your Lego storage boxes.
         </p>
         <Link href="/create">
           <Button>

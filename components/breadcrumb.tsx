@@ -13,7 +13,7 @@ interface BreadcrumbProps {
 
 export function Breadcrumb({ pageName }: BreadcrumbProps) {
   return (
-    <UIBreadcrumb>
+    <UIBreadcrumb className="border-b p-2">
       <BreadcrumbList>
         {pageName ? (
           <>

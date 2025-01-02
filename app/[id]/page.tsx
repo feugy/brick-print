@@ -3,7 +3,7 @@ import { PageTitle } from '@/components/page-title'
 import { load } from '@/lib/storage'
 import { Suspense } from 'react'
 import { Details } from './details'
-import Loading from './loading'
+import { DetailsSkeleton } from './skeleton'
 
 export default async function DetailsPage({
   params,
@@ -17,7 +17,7 @@ export default async function DetailsPage({
       <PageTitle>Edit Stickers</PageTitle>
       <div className="flex flex-col gap-4 p-4">
         <Breadcrumb pageName="Edit" />
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<DetailsSkeleton />}>
           <Details data={data} />
         </Suspense>
       </div>

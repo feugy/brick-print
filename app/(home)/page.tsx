@@ -7,7 +7,7 @@ import { PlusCircle } from 'lucide-react'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { List } from './list'
-import Loading from './loading'
+import { ListSkeleton } from './skeleton'
 
 export default async function Home() {
   const withSaveButton = await canSave()
@@ -26,7 +26,7 @@ export default async function Home() {
           </Button>
         </Link>
         {withSaveButton && (
-          <Suspense fallback={<Loading />}>
+          <Suspense fallback={<ListSkeleton />}>
             <List data={data} />
           </Suspense>
         )}

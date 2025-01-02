@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton'
 
-export default function Loading() {
+export function ListSkeleton() {
   return (
     <>
       <h2 className="text-muted-foreground">Sticker pages</h2>

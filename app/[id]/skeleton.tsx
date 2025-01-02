@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ChevronDown, Search } from 'lucide-react'
 
-export default function Loading() {
+export function DetailsSkeleton() {
   return (
     <>
       <TitleBlock value={'...'} />

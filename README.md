@@ -19,5 +19,5 @@ Alternative images:
 CREATE USER brickprint LOGIN PASSWORD 'xxx';
 CREATE DATABASE brickprint OWNER brickprint;
 \c brickprint
-CREATE TABLE pages(id UUID PRIMARY KEY, title TEXT, stickers JSONB);
+CREATE TABLE pages(id UUID PRIMARY KEY, title TEXT, stickers JSONB, owner TEXT);
 ALTER TABLE pages OWNER TO brickprint;

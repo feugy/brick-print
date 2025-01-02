@@ -1,5 +1,5 @@
+import { Heart } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { Heart, Triangle } from 'lucide-react'
 
 export function Footer() {
   return (

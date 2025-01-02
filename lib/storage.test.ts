@@ -1,9 +1,15 @@
+import { auth } from '@/lib/auth'
 import { list, load, save } from '@/lib/storage'
 import type { Page } from '@/lib/types'
+import type { Session } from 'next-auth'
 import postgres, { type JSONValue } from 'postgres'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const sql = postgres(process.env.DATABASE_URL ?? '', { ssl: 'allow' })
+
+vi.mock('@/lib/auth')
+
+const authMock = vi.mocked(auth as () => Promise<Session | null>)
 
 describe('given existing pages', () => {
   const page: Page = {
@@ -25,25 +31,45 @@ describe('given existing pages', () => {
     ],
   }
 
+  const page2: Page = {
+    id: '00e32354-7a6c-456f-bd3b-44a812da586f',
+    title: 'Test page #2',
+    stickers: [
+      {
+        id: '1',
+        alignment: 'top-left',
+        size: { width: 160, height: 40 },
+        parts: [{ id: '11090', name: 'Bar Holder w/ Clip' }],
+      },
+    ],
+  }
+
+  const owner = 'jane@doo.dev'
+  const owner2 = 'jack@spar.row'
+
   beforeEach(async () => {
+    vi.resetAllMocks()
+    authMock.mockResolvedValue({ user: { email: owner }, expires: '1' })
     await sql`TRUNCATE TABLE pages;`
-    await sql`INSERT INTO pages (id, title, stickers) VALUES (${page.id}, ${page.title ?? ''}, ${sql.json(page.stickers as unknown as readonly JSONValue[])})`
+    await sql`INSERT INTO pages (id, title, stickers, owner) VALUES 
+  (${page.id}, ${page.title ?? ''}, ${sql.json(page.stickers as unknown as readonly JSONValue[])}, ${owner}),
+  (${page2.id}, ${page2.title ?? ''}, ${sql.json(page2.stickers as unknown as readonly JSONValue[])}, ${owner2})`
   })
 
   describe('save()', () => {
     it.each([
       {
-        title: 'missing data',
+        test: 'missing data',
         error:
           '"undefined" is not valid JSON at "stickers"; Required at "stickers"',
       },
       {
-        title: 'empty stickers',
+        test: 'empty stickers',
         stickers: [],
         error: 'Array must contain at least 1 element(s) at "stickers"',
       },
       {
-        title: 'invalid sticker size',
+        test: 'invalid sticker size',
         stickers: [
           { id: '1', alignment: 'top-left', size: { width: -1 }, parts: [] },
         ],
@@ -51,7 +77,7 @@ describe('given existing pages', () => {
           'Number must be greater than 0 at "stickers[0].size.width"; Required at "stickers[0].size.height"',
       },
       {
-        title: 'invalid parts',
+        test: 'invalid parts',
         stickers: [
           {
             id: '1',
@@ -63,10 +89,26 @@ describe('given existing pages', () => {
         error:
           'Expected string, received number at "stickers[0].parts[1].id"; Required at "stickers[0].parts[1].name"',
       },
-    ])('rejects $title', async ({ error, stickers }) => {
+      {
+        test: 'title too long',
+        title: 'a'.repeat(256),
+        stickers: [
+          {
+            id: '1',
+            alignment: 'top-left',
+            size: { width: 160, height: 40 },
+            parts: [{ id: 'valid', name: '1x1 plate' }],
+          },
+        ],
+        error: 'String must contain at most 100 character(s) at "title"',
+      },
+    ])('rejects $test', async ({ error, stickers, title }) => {
       const data = new FormData()
       if (stickers) {
         data.append('stickers', JSON.stringify(stickers))
+      }
+      if (title) {
+        data.append('title', title)
       }
       expect(await save({ success: true, message: '' }, data)).toEqual({
         success: false,
@@ -130,6 +172,27 @@ describe('given existing pages', () => {
         await sql`SELECT title, stickers FROM pages WHERE id = ${page.id}`
       ).toEqual([{ title, stickers }])
     })
+
+    it('denies unauthenticated users', async () => {
+      authMock.mockResolvedValue(null)
+      const data = new FormData()
+      data.append(
+        'stickers',
+        JSON.stringify([
+          {
+            id: '1',
+            alignment: 'top-left',
+            size: { width: 160, height: 40 },
+            parts: [{ id: '11090', name: 'Bar Holder w/ Clip' }],
+          },
+        ])
+      )
+
+      expect(await save({ success: true, message: '' }, data)).toEqual({
+        success: false,
+        message: 'Not authenticated',
+      })
+    })
   })
 
   describe('load()', () => {
@@ -154,6 +217,26 @@ describe('given existing pages', () => {
     it('returns existing data', async () => {
       expect(await load(page.id)).toEqual({ success: true, page })
     })
+
+    it('can not access other user pages', async () => {
+      expect(await load(page2.id)).toEqual({
+        success: false,
+        message: `No page with id '${page2.id}'`,
+      })
+      authMock.mockResolvedValue({ user: { email: owner2 }, expires: '1' })
+      expect(await load(page2.id)).toEqual({
+        success: true,
+        page: page2,
+      })
+    })
+
+    it('denies unauthenticated users', async () => {
+      authMock.mockResolvedValue(null)
+      expect(await load(page.id)).toEqual({
+        success: false,
+        message: 'Not authenticated',
+      })
+    })
   })
 
   describe('list()', () => {
@@ -167,6 +250,14 @@ describe('given existing pages', () => {
     it('handles no data', async () => {
       await sql`TRUNCATE TABLE pages;`
       expect(await list()).toEqual({ success: true, pages: [] })
+    })
+
+    it('denies unauthenticated users', async () => {
+      authMock.mockResolvedValue(null)
+      expect(await list()).toEqual({
+        success: false,
+        message: 'Not authenticated',
+      })
     })
   })
 })

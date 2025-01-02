@@ -33,13 +33,13 @@ export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
     })
   }
 
-  const handleResized: ResizeCallback = (event, direction, ref, delta) => {
+  const handleResized: ResizeCallback = (_event, _direction, _ref, delta) => {
     const size = computeSize(sticker.size, delta)
     setCurrentSize(size)
     onEdit({ ...sticker, size })
   }
 
-  const handleResize: ResizeCallback = (event, direction, ref, delta) => {
+  const handleResize: ResizeCallback = (_event, _direction, _ref, delta) => {
     setCurrentSize(computeSize(sticker.size, delta))
   }
 

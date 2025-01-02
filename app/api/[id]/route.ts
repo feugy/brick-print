@@ -1,11 +1,15 @@
+import { auth } from '@/lib/auth'
 import { load } from '@/lib/storage'
 import { NextResponse } from 'next/server'
 
-export async function GET(
-  _: Request,
+// @ts-expect-error -- next-auth has not the correct type for params
+export const GET = auth(async function GET(
+  { auth },
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // TODO validate id
+  if (!auth) {
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+  }
   const { id } = await params
   try {
     const data = await load(id)
@@ -23,4 +27,4 @@ export async function GET(
       { status: 500 }
     )
   }
-}
+})

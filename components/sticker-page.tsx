@@ -11,19 +11,13 @@ import { save } from '@/lib/storage'
 import { useActionState, useEffect, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
 import { TitleBlock } from './title-block'
-import { Input } from './ui/input'
 
 interface StickerPageProps {
   withText?: boolean
-  withSaveButton?: boolean
   withInstructions?: boolean
 }
 
-export function StickerPage({
-  withText,
-  withInstructions,
-  withSaveButton = true,
-}: StickerPageProps) {
+export function StickerPage({ withText, withInstructions }: StickerPageProps) {
   const [instructionsOpen, setInstructionsOpen] = useStore((state) => [
     state.instructionsOpen,
     state.setInstructionsOpen,
@@ -58,10 +52,7 @@ export function StickerPage({
   }, [formState])
 
   return (
-    <form
-      className="flex flex-col gap-4"
-      action={withSaveButton ? formAction : undefined}
-    >
+    <form className="flex flex-col gap-4" action={formAction}>
       {withInstructions && (
         <Instructions open={instructionsOpen} onToggle={setInstructionsOpen} />
       )}
@@ -89,7 +80,7 @@ export function StickerPage({
       {stickers.length > 0 && (
         <div className="flex flex-row gap-2 justify-center mt-2">
           <PrintButton ref={printableRef} />
-          {withSaveButton && <SaveButton />}
+          <SaveButton />
         </div>
       )}
     </form>

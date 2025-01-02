@@ -1,12 +1,12 @@
 'use server'
 
 import { randomUUID } from 'node:crypto'
+import { auth } from '@/lib/auth'
 import type {
   ListResponse,
   LoadResponse,
   Page,
   SaveResponse,
-  Sticker,
 } from '@/lib/types'
 import { redirect } from 'next/navigation'
 import postgres from 'postgres'
@@ -53,7 +53,7 @@ const pageSchema = z.object({
   ),
 })
 
-// CREATE TABLE pages(id UUID PRIMARY KEY, title TEXT, stickers JSONB);
+// CREATE TABLE pages(id UUID PRIMARY KEY, title TEXT, stickers JSONB, owner TEXT);
 
 export async function save(_: SaveResponse, body: FormData) {
   const response: SaveResponse = { success: false, message: '' }
@@ -66,24 +66,29 @@ export async function save(_: SaveResponse, body: FormData) {
 
   const { id, title, stickers } = parsed.data
   let saved: Page | undefined
-  try {
-    saved = (
-      await sql`
-      INSERT INTO pages (id, title, stickers)
-      VALUES (${id ?? randomUUID()}, ${title ?? makeTitle(stickers)}, ${sql.json(stickers)})
-      ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, stickers = EXCLUDED.stickers
-      RETURNING id
-    `
-    )[0] as Page
+  const session = await auth()
+  if (!session?.user?.email) {
+    response.message = 'Not authenticated'
+  } else {
+    try {
+      saved = (
+        await sql`
+        INSERT INTO pages (id, title, stickers, owner)
+        VALUES (${id ?? randomUUID()}, ${title ?? makeTitle(stickers)}, ${sql.json(stickers)}, ${session.user.email})
+        ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, stickers = EXCLUDED.stickers
+        RETURNING id
+      `
+      )[0] as Page
 
-    response.success = true
-    response.message = 'Page saved'
-  } catch (error) {
-    console.error(error)
-    response.message = `Failed to save page: ${(error as Error).message}`
-  }
-  if (!id && saved?.id) {
-    return redirect(`/${saved.id}`)
+      response.success = true
+      response.message = 'Page saved'
+    } catch (error) {
+      console.error(error)
+      response.message = `Failed to save page: ${(error as Error).message}`
+    }
+    if (!id && saved?.id) {
+      return redirect(`/${saved.id}`)
+    }
   }
   return response
 }
@@ -103,17 +108,22 @@ export async function load(id: string) {
     return response
   }
 
-  try {
-    const rows = await sql<
-      Page[]
-    >`SELECT id, title, stickers FROM pages WHERE id = ${id}`
-    if (rows.length === 1) {
-      return { success: true, page: rows[0] } as LoadResponse
+  const session = await auth()
+  if (!session?.user?.email) {
+    response.message = 'Not authenticated'
+  } else {
+    try {
+      const rows = await sql<
+        Page[]
+      >`SELECT id, title, stickers FROM pages WHERE id = ${id} AND owner = ${session.user.email}`
+      if (rows.length === 1) {
+        return { success: true, page: rows[0] } as LoadResponse
+      }
+      response.message = `No page with id '${id}'`
+    } catch (error) {
+      console.error(error)
+      response.message = `Failed to load page: ${(error as Error).message}`
     }
-    response.message = `No page with id '${id}'`
-  } catch (error) {
-    console.error(error)
-    response.message = `Failed to load page: ${(error as Error).message}`
   }
   return response
 }
@@ -121,12 +131,19 @@ export async function load(id: string) {
 export async function list() {
   const response: ListResponse = { success: false, message: '' }
 
-  try {
-    const pages = await sql<Page[]>`SELECT id, title, stickers FROM pages`
-    return { success: true, pages } as ListResponse
-  } catch (error) {
-    console.error(error)
-    response.message = `Failed to list pages: ${(error as Error).message}`
+  const session = await auth()
+  if (!session?.user?.email) {
+    response.message = 'Not authenticated'
+  } else {
+    try {
+      const pages = await sql<
+        Page[]
+      >`SELECT id, title, stickers FROM pages WHERE owner = ${session.user.email}`
+      return { success: true, pages } as ListResponse
+    } catch (error) {
+      console.error(error)
+      response.message = `Failed to list pages: ${(error as Error).message}`
+    }
   }
   return response
 }

@@ -29,15 +29,12 @@ export function Instructions({ open, onToggle }: InstructionsProps) {
         </AccordionTrigger>
         <AccordionContent className="pb-0">
           <ol className="list-decimal list-inside space-y-1">
-            <li>First, add a sticker by selecting a size below.</li>
-            <li>
-              Once you've added a sticker, you can search for parts to add to
-              it.
-            </li>
+            <li>First, add a sticker.</li>
+            <li>Search for parts to add to it.</li>
             <li>
               You can resize stickers by dragging the bottom-right corner.
             </li>
-            <li>Reorder parts within a sticker by dragging them.</li>
+            <li>Reorder parts within stickers by dragging them.</li>
             <li>Print your stickers when ready!</li>
           </ol>
         </AccordionContent>

@@ -1,8 +1,9 @@
+import { Breadcrumb } from '@/components/breadcrumb'
+import { PageTitle } from '@/components/page-title'
 import { load } from '@/lib/storage'
 import { Suspense } from 'react'
 import { Details } from './details'
 import Loading from './loading'
-import { PageTitle } from '@/components/page-title'
 
 export default async function DetailsPage({
   params,
@@ -12,11 +13,14 @@ export default async function DetailsPage({
   const { id } = await params
   const data = load(id)
   return (
-    <div className="flex flex-col gap-4">
+    <>
       <PageTitle>Edit Stickers</PageTitle>
-      <Suspense fallback={<Loading />}>
-        <Details data={data} />
-      </Suspense>
-    </div>
+      <div className="flex flex-col gap-4 p-4">
+        <Breadcrumb pageName="Edit" />
+        <Suspense fallback={<Loading />}>
+          <Details data={data} />
+        </Suspense>
+      </div>
+    </>
   )
 }

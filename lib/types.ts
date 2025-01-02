@@ -33,9 +33,14 @@ export interface SaveResponse {
 
 export interface Page {
   id: string
+  title?: string
   stickers: Sticker[]
 }
 
 export type LoadResponse =
   | { success: true; page: Page }
+  | { success: false; message: string }
+
+export type ListResponse =
+  | { success: true; pages: Page[] }
   | { success: false; message: string }

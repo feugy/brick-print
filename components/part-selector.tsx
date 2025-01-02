@@ -65,7 +65,7 @@ export function PartSelector({
   return (
     <Command shouldFilter={false} loop className="border">
       <CommandInput
-        placeholder="Search for Lego parts"
+        placeholder="Lego parts name or id"
         value={searchTerm}
         onValueChange={handleChange}
       />

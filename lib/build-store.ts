@@ -1,9 +1,10 @@
 import type { Part, Sticker } from '@/lib/types'
-import { createStore } from 'zustand/vanilla'
 import { devtools } from 'zustand/middleware'
+import { createStore } from 'zustand/vanilla'
 
 export interface State {
   id?: string
+  title?: string
   stickers: Sticker[]
   instructionsOpen: boolean
 }
@@ -14,6 +15,7 @@ interface Actions {
   removeSticker: (removed: Sticker) => void
   addPart: (added: Part) => void
   setInstructionsOpen: (isOpen: boolean) => void
+  setTitle: (title: string) => void
 }
 
 export type Store = State & Actions
@@ -57,5 +59,6 @@ export const buildStore = (init: Partial<State> = {}) =>
         })),
       setInstructionsOpen: (isOpen) =>
         set(() => ({ instructionsOpen: isOpen })),
+      setTitle: (title: string) => set(() => ({ title })),
     }))
   )

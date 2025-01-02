@@ -1,7 +1,13 @@
 'use server'
 
-import type { SaveResponse, LoadResponse, Page } from '@/lib/types'
 import { randomUUID } from 'node:crypto'
+import type {
+  ListResponse,
+  LoadResponse,
+  Page,
+  SaveResponse,
+  Sticker,
+} from '@/lib/types'
 import { redirect } from 'next/navigation'
 import postgres from 'postgres'
 import { z } from 'zod'
@@ -11,6 +17,7 @@ const sql = postgres(process.env.DATABASE_URL ?? '', { ssl: 'allow' })
 
 const pageSchema = z.object({
   id: z.string().optional(),
+  title: z.string().max(100).optional(),
   stickers: z.preprocess(
     (input, ctx: z.RefinementCtx) => {
       try {
@@ -46,7 +53,7 @@ const pageSchema = z.object({
   ),
 })
 
-// CREATE TABLE pages(id UUID PRIMARY KEY, stickers JSONB);
+// CREATE TABLE pages(id UUID PRIMARY KEY, title TEXT, stickers JSONB);
 
 export async function save(_: SaveResponse, body: FormData) {
   const response: SaveResponse = { success: false, message: '' }
@@ -57,14 +64,14 @@ export async function save(_: SaveResponse, body: FormData) {
     return response
   }
 
-  const { id, stickers } = parsed.data
+  const { id, title, stickers } = parsed.data
   let saved: Page | undefined
   try {
     saved = (
       await sql`
-      INSERT INTO pages (id, stickers)
-      VALUES (${id ?? randomUUID()}, ${sql.json(stickers)})
-      ON CONFLICT (id) DO UPDATE SET stickers = EXCLUDED.stickers
+      INSERT INTO pages (id, title, stickers)
+      VALUES (${id ?? randomUUID()}, ${title ?? makeTitle(stickers)}, ${sql.json(stickers)})
+      ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, stickers = EXCLUDED.stickers
       RETURNING id
     `
     )[0] as Page
@@ -81,6 +88,10 @@ export async function save(_: SaveResponse, body: FormData) {
   return response
 }
 
+function makeTitle(stickers: unknown[]) {
+  return `Stickers (${stickers.length})`
+}
+
 const idSchema = z.object({ id: z.string().uuid() })
 
 export async function load(id: string) {
@@ -93,7 +104,9 @@ export async function load(id: string) {
   }
 
   try {
-    const rows = await sql`SELECT id, stickers FROM pages WHERE id = ${id}`
+    const rows = await sql<
+      Page[]
+    >`SELECT id, title, stickers FROM pages WHERE id = ${id}`
     if (rows.length === 1) {
       return { success: true, page: rows[0] } as LoadResponse
     }
@@ -101,6 +114,19 @@ export async function load(id: string) {
   } catch (error) {
     console.error(error)
     response.message = `Failed to load page: ${(error as Error).message}`
+  }
+  return response
+}
+
+export async function list() {
+  const response: ListResponse = { success: false, message: '' }
+
+  try {
+    const pages = await sql<Page[]>`SELECT id, title, stickers FROM pages`
+    return { success: true, pages } as ListResponse
+  } catch (error) {
+    console.error(error)
+    response.message = `Failed to list pages: ${(error as Error).message}`
   }
   return response
 }

@@ -10,15 +10,19 @@ import { useStore } from '@/hooks/use-store'
 import { save } from '@/lib/storage'
 import { useActionState, useEffect, useMemo, useRef } from 'react'
 import { toast } from 'sonner'
+import { TitleBlock } from './title-block'
+import { Input } from './ui/input'
 
 interface StickerPageProps {
-  withSaveButton: boolean
+  withText?: boolean
+  withSaveButton?: boolean
   withInstructions?: boolean
 }
 
 export function StickerPage({
+  withText,
   withInstructions,
-  withSaveButton,
+  withSaveButton = true,
 }: StickerPageProps) {
   const [instructionsOpen, setInstructionsOpen] = useStore((state) => [
     state.instructionsOpen,
@@ -26,6 +30,7 @@ export function StickerPage({
   ])
 
   const stickers = useStore((state) => state.stickers)
+  const [title, setTitle] = useStore((state) => [state.title, state.setTitle])
   const id = useStore((state) => state.id)
   const selectedParts = useMemo(
     () => stickers.flatMap((s) => s.parts),
@@ -53,10 +58,14 @@ export function StickerPage({
   }, [formState])
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <form
+      className="flex flex-col gap-4"
+      action={withSaveButton ? formAction : undefined}
+    >
       {withInstructions && (
         <Instructions open={instructionsOpen} onToggle={setInstructionsOpen} />
       )}
+      {withText && <TitleBlock value={title} onChange={setTitle} />}
       <SizeSelector onAdd={handleAddSticker} />
       {stickers.length > 0 && (
         <PartSelector
@@ -65,26 +74,24 @@ export function StickerPage({
           onSearch={() => setInstructionsOpen(false)}
         />
       )}
-      <form action={withSaveButton ? formAction : undefined}>
-        <div className="flex flex-row flex-wrap gap-2" ref={printableRef}>
-          {stickers.map((sticker) => (
-            <Sticker
-              key={sticker.id}
-              sticker={sticker}
-              onEdit={updateSticker}
-              onRemove={removeSticker}
-            />
-          ))}
+      <div className="flex flex-row flex-wrap gap-2" ref={printableRef}>
+        {stickers.map((sticker) => (
+          <Sticker
+            key={sticker.id}
+            sticker={sticker}
+            onEdit={updateSticker}
+            onRemove={removeSticker}
+          />
+        ))}
+      </div>
+      {id ? <input type="hidden" name="id" value={id} /> : null}
+      <input type="hidden" name="stickers" value={JSON.stringify(stickers)} />
+      {stickers.length > 0 && (
+        <div className="flex flex-row gap-2 justify-center mt-2">
+          <PrintButton ref={printableRef} />
+          {withSaveButton && <SaveButton />}
         </div>
-        {id ? <input type="hidden" name="id" value={id} /> : null}
-        <input type="hidden" name="stickers" value={JSON.stringify(stickers)} />
-        {stickers.length > 0 && (
-          <div className="flex flex-row gap-2 justify-center mt-2">
-            <PrintButton ref={printableRef} />
-            {withSaveButton && <SaveButton />}
-          </div>
-        )}
-      </form>
-    </div>
+      )}
+    </form>
   )
 }

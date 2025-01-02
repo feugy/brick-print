@@ -1,13 +1,17 @@
+import { Breadcrumb } from '@/components/breadcrumb'
 import { PageTitle } from '@/components/page-title'
-import { Create } from './create'
 import { canSave } from '@/lib/flags'
+import { Create } from './create'
 
 export default async function CreatePage() {
   const withSaveButton = await canSave()
   return (
-    <div className="flex flex-col gap-4">
+    <>
       <PageTitle>Create New Stickers</PageTitle>
-      <Create withSaveButton={withSaveButton} />
-    </div>
+      <div className="flex flex-col gap-4 p-4">
+        <Breadcrumb pageName="Create" />
+        <Create withSaveButton={withSaveButton} />
+      </div>
+    </>
   )
 }

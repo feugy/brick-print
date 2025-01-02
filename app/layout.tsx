@@ -1,3 +1,4 @@
+import { Footer } from '@/components/footer'
 import { Toaster } from '@/components/ui/sonner'
 import { Analytics } from '@vercel/analytics/next'
 import { VercelToolbar } from '@vercel/toolbar/next'
@@ -30,8 +31,9 @@ const shouldInjectToolbar = process.env.NODE_ENV === 'development'
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${pt.variable} ${jua.variable} antialiased`}>
-      <body>
-        {children}
+      <body className="flex flex-col min-h-screen overflow-auto">
+        <main className="flex-1 flex flex-col gap-4">{children}</main>
+        <Footer />
         <Toaster />
         <Analytics />
         {shouldInjectToolbar && <VercelToolbar />}

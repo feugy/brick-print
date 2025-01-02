@@ -16,7 +16,7 @@ export function Details(props: DetailsProps) {
   }
   return (
     <StoreProvider state={data.page}>
-      <StickerPage withSaveButton />
+      <StickerPage withText />
     </StoreProvider>
   )
 }

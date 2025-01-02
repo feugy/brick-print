@@ -1,10 +1,12 @@
+import { TitleBlock } from '@/components/title-block'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ChevronDown, Search } from 'lucide-react'
 
 export default function Loading() {
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <>
+      <TitleBlock value={'...'} />
       <Button className="px-3 w-[200px] text-left" variant="outline" disabled>
         <span className="flex-1">Select a size</span>
         <ChevronDown />
@@ -22,6 +24,6 @@ export default function Loading() {
         <Skeleton className="h-[40mm] w-[160mm]" />
         <Skeleton className="h-[40mm] w-[160mm]" />
       </div>
-    </div>
+    </>
   )
 }

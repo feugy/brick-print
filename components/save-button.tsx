@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { LoaderCircle, HardDriveUpload } from 'lucide-react'
+import { HardDriveUpload, LoaderCircle } from 'lucide-react'
 import { useFormStatus } from 'react-dom'
 
 const iconClassName = '!h-[1em] !w-[1em]'

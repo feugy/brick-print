@@ -34,6 +34,8 @@ export function StickerPage({ withText, withInstructions }: StickerPageProps) {
   )
   const handleAddPart = useStore((state) => state.addPart)
   const handleAddSticker = useStore((state) => state.addSticker)
+  const copySticker = useStore((state) => state.copySticker)
+  const pasteSticker = useStore((state) => state.pasteSticker)
   const updateSticker = useStore((state) => state.updateSticker)
   const removeSticker = useStore((state) => state.removeSticker)
   const printableRef = useRef<HTMLDivElement>(null)
@@ -52,6 +54,11 @@ export function StickerPage({ withText, withInstructions }: StickerPageProps) {
       }
     }
   }, [formState])
+
+  useEffect(() => {
+    window.addEventListener('paste', pasteSticker)
+    return () => window.removeEventListener('paste', pasteSticker)
+  }, [pasteSticker])
 
   const noSession = useMemo(() => !session?.user?.email, [session])
 
@@ -72,11 +79,20 @@ export function StickerPage({ withText, withInstructions }: StickerPageProps) {
           onSearch={() => setInstructionsOpen(false)}
         />
       )}
-      <div className="flex flex-row flex-wrap gap-2" ref={printableRef}>
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: only clicks must be canceled to prevent submitting the entire form. */}
+      <div
+        className="flex flex-row flex-wrap gap-2"
+        ref={printableRef}
+        onClick={(event) => event.preventDefault()}
+      >
         {stickers.map((sticker) => (
           <Sticker
             key={sticker.id}
             sticker={sticker}
+            onCopy={(sticker) => {
+              copySticker(sticker)
+              toast.success('Etiquette copiée')
+            }}
             onEdit={updateSticker}
             onRemove={removeSticker}
           />

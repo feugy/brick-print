@@ -1,4 +1,4 @@
-import type { Part, Sticker } from '@/lib/types'
+import type { Part, Size, Sticker } from '@/lib/types'
 import { devtools } from 'zustand/middleware'
 import { createStore } from 'zustand/vanilla'
 
@@ -7,10 +7,13 @@ export interface State {
   title?: string
   stickers: Sticker[]
   instructionsOpen: boolean
+  copied?: Sticker
 }
 
 interface Actions {
-  addSticker: (added: Sticker) => void
+  addSticker: (size: Size) => void
+  copySticker: (copied: Sticker) => void
+  pasteSticker: () => void
   updateSticker: (updated: Sticker) => void
   removeSticker: (removed: Sticker) => void
   addPart: (added: Part) => void
@@ -25,13 +28,23 @@ const initState: State = {
   instructionsOpen: true,
 }
 
-export const buildStore = (init: Partial<State> = {}) =>
-  createStore<Store>()(
-    devtools((set) => ({
+export const buildStore = (init: Partial<State> = {}) => {
+  return createStore<Store>()(
+    devtools((set, get) => ({
       ...initState,
       ...init,
-      addSticker: (added) =>
-        set((state) => ({ stickers: [added, ...state.stickers] })),
+      addSticker: (size) =>
+        set((state) => ({
+          stickers: [
+            {
+              id: Date.now().toString(),
+              size,
+              alignment: 'top-left',
+              parts: [],
+            },
+            ...state.stickers,
+          ],
+        })),
       addPart: (added) =>
         set((state) => {
           if (!state.stickers.length) return {}
@@ -57,8 +70,39 @@ export const buildStore = (init: Partial<State> = {}) =>
         set((state) => ({
           stickers: state.stickers.filter(({ id }) => id !== removed.id),
         })),
+      pasteSticker: async () => {
+        const state = get()
+        if (!state.copied) {
+          try {
+            const data = JSON.parse(await navigator.clipboard.readText())
+            // TODO validate data
+            if (data.id) {
+              state.copied = data
+            }
+          } finally {
+            navigator.clipboard.writeText('')
+          }
+        }
+        if (state.copied) {
+          set({
+            stickers: [
+              {
+                ...state.copied,
+                id: Date.now().toString(),
+              },
+              ...state.stickers,
+            ],
+            copied: undefined,
+          })
+        }
+      },
+      copySticker: (copied) => {
+        navigator.clipboard.writeText(JSON.stringify(copied))
+        set(() => ({ copied }))
+      },
       setInstructionsOpen: (isOpen) =>
         set(() => ({ instructionsOpen: isOpen })),
       setTitle: (title: string) => set(() => ({ title })),
     }))
   )
+}

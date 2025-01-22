@@ -45,11 +45,11 @@ const pageSchema = z.object({
                 name: z.string().max(50),
               })
             )
-            .max(50),
+            .max(100),
         })
       )
       .min(1)
-      .max(10)
+      .max(50)
   ),
 })
 

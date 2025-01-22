@@ -10,11 +10,12 @@ import { ReactSortable } from 'react-sortablejs'
 
 interface StickerProps {
   sticker: Type
+  onCopy: (sticker: Type) => void
   onEdit: (sticker: Type, added?: Part) => void
   onRemove: (sticker: Type) => void
 }
 
-export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
+export function Sticker({ sticker, onCopy, onRemove, onEdit }: StickerProps) {
   const [currentSize, setCurrentSize] = useState(sticker.size)
 
   const handleRemove = (removed: Part) => {
@@ -85,6 +86,7 @@ export function Sticker({ sticker, onRemove, onEdit }: StickerProps) {
         ))}
       </ReactSortable>
       <StickerControl
+        onCopy={() => onCopy(sticker)}
         onRemove={() => onRemove(sticker)}
         alignment={sticker.alignment}
         onAlignmentChange={handleChangeAlignment}

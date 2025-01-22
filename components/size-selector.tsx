@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { Size, Sticker } from '@/lib/types'
+import type { Size } from '@/lib/types'
 
 const predefinedSizes: Size[] = [
   { width: 160, height: 40 },
@@ -15,17 +15,12 @@ const predefinedSizes: Size[] = [
 ]
 
 interface SizeSelectorProps {
-  onAdd?: (sticker: Sticker) => void
+  onAdd: (size: Size) => void
 }
 
 export function SizeSelector({ onAdd }: SizeSelectorProps) {
   const handleSizeChange = (value: string) => {
-    onAdd?.({
-      id: Date.now().toString(),
-      size: predefinedSizes[Number.parseInt(value)],
-      alignment: 'top-left',
-      parts: [],
-    })
+    onAdd(predefinedSizes[Number.parseInt(value)])
   }
 
   return (

@@ -21,7 +21,13 @@ export function PartLabel({ part, onRemove, onEdit }: PartLabelProps) {
         <span className="text-gray-500 truncate">{part.id}</span>
       </div>
 
-      <div className="z-10 absolute right-0 top-0 flex flex-col gap-1 items-center opacity-0 group-hover/part:opacity-100 group-focus-within/part:opacity-100 transition-opacity print:hidden">
+      <div
+        className="z-10 absolute right-0 top-0 
+                    flex-col gap-1 items-center 
+                    hidden opacity-0 transition-opacity
+                    print:hidden select-none
+                    group-hover/part:opacity-100 group-hover/part:flex"
+      >
         {onEdit && (
           <Button
             size="icon"

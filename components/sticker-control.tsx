@@ -21,10 +21,11 @@ export function StickerControl({
   return (
     <div
       className="absolute z-10 top-[-1px] left-[100%]
-   bg-white border border-l-0 border-gray-400 rounded-r
-     p-1 pl-0 flex flex-col items-center gap-1 
-     opacity-0 transition-opacity print:hidden
-     group-hover/sticker:opacity-100 group-hover/sticker:flex group-focus-within/sticker:opacity-100"
+                bg-white border border-l-0 border-gray-400 rounded-r
+                  p-1 pl-0 flex-col items-center gap-1 
+                  hidden opacity-0 transition-opacity print:hidden
+                  group-hover/sticker:opacity-100 group-focus-within/sticker:opacity-100
+                  group-hover/sticker:flex group-focus-within/sticker:flex"
     >
       <AlignmentSelector
         alignment={alignment}
